@@ -1,0 +1,1755 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#263437">
+  <meta name="description" content="Explorador académico e interactivo de mitología griega a partir de Los mitos griegos de Robert Graves.">
+  <title>Mythos &amp; Aitiologia: El Sistema Graves de Mitología Griega</title>
+
+  <!--
+    Dependencias visuales opcionales, solicitadas para este diseño.
+    Todo el contenido, los datos y la lógica se encuentran en este archivo;
+    el CSS propio conserva la interfaz si el navegador no tiene conexión.
+  -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+
+  <style>
+    /* Base visual: los estilos locales son deliberadamente suficientes sin Tailwind ni red. */
+    :root {
+      --paper: #f3efe5;
+      --paper-dark: #e8e0d0;
+      --card: #fffdf8;
+      --ink: #27363a;
+      --ink-soft: #526166;
+      --muted: #787971;
+      --line: #ddd5c6;
+      --gold: #b18a45;
+      --gold-pale: #f1e7d0;
+      --terra: #a6543e;
+      --terra-pale: #f4e5df;
+      --sage: #63766e;
+      --sage-pale: #e8eee9;
+      --display: "Cinzel", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --body: "Lora", Georgia, "Times New Roman", serif;
+      --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --shadow: 0 18px 55px rgba(49, 42, 30, .075);
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 16% 9%, rgba(177, 138, 69, .07), transparent 30rem),
+        linear-gradient(180deg, #f6f2e9 0%, var(--paper) 36rem, #f6f3ec 100%);
+      font-family: var(--body);
+      font-size: 15px;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { color: inherit; }
+    [hidden] { display: none !important; }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid rgba(177, 138, 69, .7); outline-offset: 3px; }
+
+    .skip-link {
+      position: fixed; z-index: 100; top: 10px; left: 10px; transform: translateY(-150%);
+      padding: 9px 13px; color: #fff; background: var(--ink); border-radius: 5px;
+    }
+    .skip-link:focus { transform: translateY(0); }
+    .masthead {
+      position: relative; overflow: hidden; color: #f8f3e8;
+      background: #263437;
+      border-bottom: 4px solid var(--gold);
+      padding: 17px 22px 19px;
+    }
+    .masthead::before, .masthead::after {
+      content: ""; position: absolute; top: 50%; width: min(19vw, 230px); height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(216, 185, 119, .7));
+    }
+    .masthead::before { left: 0; }
+    .masthead::after { right: 0; transform: scaleX(-1); }
+    .masthead-inner { max-width: 1220px; margin: auto; display: flex; align-items: center; justify-content: center; gap: 13px; position: relative; }
+    .brand-seal { width: 31px; height: 31px; color: #d4b777; flex: none; }
+    .brand-kicker { font: 600 10px/1.3 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: #ddc991; }
+    .brand-line { font: 500 12px/1.4 var(--sans); letter-spacing: .09em; color: rgba(255,255,255,.78); margin-top: 3px; }
+
+    .page-shell { width: min(1220px, calc(100% - 38px)); margin: 0 auto; }
+    .hero { padding: 42px 0 24px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.38fr) minmax(270px, .62fr); gap: 30px; align-items: stretch; }
+    .eyebrow, .overline {
+      display: inline-flex; gap: 9px; align-items: center; color: var(--terra);
+      font: 700 10px/1.4 var(--sans); text-transform: uppercase; letter-spacing: .18em;
+    }
+    .eyebrow::before { content: ""; display: block; width: 23px; height: 1px; background: var(--terra); }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    .hero h1 { margin: 13px 0 4px; font: 600 clamp(29px, 4vw, 48px)/1.14 var(--display); letter-spacing: -.035em; color: #243338; }
+    .hero-subtitle { margin: 0; font: 500 clamp(13px, 1.8vw, 18px)/1.5 var(--display); color: #677174; letter-spacing: .035em; }
+    .hero-copy { max-width: 710px; margin: 20px 0 0; color: #596367; font-size: 15px; }
+    .hero-copy strong { color: #344247; font-weight: 600; }
+    .source-plaque {
+      align-self: stretch; position: relative; padding: 21px 22px 19px; border: 1px solid #d8c9a8;
+      background: rgba(255, 253, 248, .64); box-shadow: 5px 5px 0 rgba(177, 138, 69, .08);
+    }
+    .source-plaque::before { content: "✳"; position: absolute; top: 15px; right: 18px; color: var(--gold); font-size: 18px; }
+    .source-plaque .overline { color: #887043; font-size: 9px; }
+    .source-plaque h2 { margin: 10px 25px 8px 0; font: 600 16px/1.45 var(--display); }
+    .source-plaque p { margin: 0; color: #667074; font-size: 12px; line-height: 1.7; }
+    .source-plaque .plaque-foot { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 13px; }
+    .tiny-tag { display: inline-flex; padding: 4px 8px; border: 1px solid #ddd2bd; color: #655e50; font: 600 9px/1.4 var(--sans); letter-spacing: .03em; }
+
+    .stat-row { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 24px; }
+    .stat-item { display: flex; align-items: baseline; gap: 7px; padding: 6px 10px; border-left: 2px solid #c6a76c; background: rgba(255,255,255,.48); }
+    .stat-number { font: 600 16px/1 var(--display); color: #5b4930; }
+    .stat-label { font: 600 9px/1.2 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: #72746f; }
+
+    .app-frame { margin: 18px 0 40px; border: 1px solid #d8d0c1; background: rgba(255, 253, 248, .78); box-shadow: var(--shadow); }
+    .frame-topline { height: 4px; background: linear-gradient(90deg, var(--terra) 0 21%, var(--gold) 21% 46%, #6f8278 46% 72%, #263437 72% 100%); }
+    .tabs-wrap { border-bottom: 1px solid var(--line); background: #fcfaf4; padding: 0 20px; }
+    .tab-list { display: flex; align-items: stretch; gap: 4px; overflow-x: auto; scrollbar-width: thin; }
+    .tab-button {
+      display: inline-flex; align-items: center; gap: 10px; position: relative; flex: 0 0 auto;
+      border: 0; border-bottom: 3px solid transparent; background: transparent; padding: 16px 16px 13px;
+      cursor: pointer; color: #74766f; font: 600 12px/1.3 var(--sans); transition: color .16s ease, background .16s ease;
+    }
+    .tab-button:hover { color: var(--ink); background: rgba(232, 224, 208, .34); }
+    .tab-button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--terra); }
+    .tab-number { display: inline-grid; place-items: center; width: 22px; height: 22px; border: 1px solid #ded6c7; border-radius: 50%; color: var(--gold); font: 700 9px/1 var(--sans); }
+    .tab-button[aria-selected="true"] .tab-number { color: #fff; border-color: var(--terra); background: var(--terra); }
+    .tab-panel { padding: 27px 26px 30px; }
+
+    .section-top { display: flex; justify-content: space-between; align-items: end; gap: 18px; margin-bottom: 20px; }
+    .section-top h2 { margin: 7px 0 3px; font: 600 clamp(20px, 2.3vw, 27px)/1.25 var(--display); }
+    .section-top p { margin: 0; max-width: 650px; color: #707571; font-size: 13px; }
+    .section-index { color: #a8a18f; font: 500 22px/1 var(--display); letter-spacing: .08em; white-space: nowrap; }
+    .notice {
+      display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; margin: 0 0 20px;
+      border-left: 3px solid var(--gold); background: #f7f1e5; color: #5f5b51; font-size: 11px; line-height: 1.65;
+    }
+    .notice strong { color: #4b463b; }
+    .notice-mark { color: var(--gold); font: 700 15px/1 var(--sans); flex: none; margin-top: 2px; }
+
+    .control-row { display: flex; align-items: end; gap: 15px; flex-wrap: wrap; margin-bottom: 21px; }
+    .field-group { display: flex; flex-direction: column; gap: 6px; min-width: min(100%, 320px); }
+    .field-label { color: #747169; font: 700 9px/1.35 var(--sans); letter-spacing: .13em; text-transform: uppercase; }
+    select, input[type="search"], textarea {
+      width: 100%; border: 1px solid #d7d0c3; border-radius: 0; background: #fffefa; color: var(--ink);
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    select { padding: 11px 36px 11px 13px; min-height: 45px; font: 500 13px/1.4 var(--body); }
+    select:focus, input:focus, textarea:focus { outline: none; border-color: #b48b48; box-shadow: 0 0 0 3px rgba(177,138,69,.13); }
+    .myth-reference { margin-left: auto; padding: 9px 12px; border: 1px solid #e2dbc9; color: #726a5c; background: #faf7ef; font: 600 10px/1.4 var(--sans); letter-spacing: .03em; }
+    .myth-reference strong { color: #634f2b; font-weight: 700; }
+    .myth-controls .field-group:first-child { flex: 1 1 390px; min-width: min(100%, 300px); }
+    .myth-controls .field-group:nth-child(2) { flex: 1 1 290px; min-width: min(100%, 245px); }
+    .field-hint { color: #969084; font: 500 9px/1.4 var(--sans); letter-spacing: normal; text-transform: none; }
+    .myth-catalog-panel { padding: 13px 14px 14px; margin: -5px 0 21px; border: 1px solid #e2dbc9; background: rgba(250,247,239,.68); }
+    .myth-catalog-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .myth-search-count { color: #827763; font: 600 10px/1.4 var(--sans); }
+    .myth-index-hint { margin: 6px 0 0; color: #878276; font: 500 10px/1.5 var(--sans); }
+    .myth-picker { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+    .myth-picker-entry { min-width: 0; }
+    .myth-picker-entry.is-expanded { grid-column: 1 / -1; }
+    .myth-picker-button { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; width: 100%; min-width: 0; min-height: 78px; padding: 9px 10px; border: 1px solid #ded7c8; background: #fffefa; color: #354449; cursor: pointer; text-align: left; transition: border-color .15s ease, background .15s ease, box-shadow .15s ease; }
+    .myth-picker-button:hover { border-color: #b48b48; background: #fbf7ed; }
+    .myth-picker-button:focus-visible { outline: 2px solid #a57831; outline-offset: 2px; }
+    .myth-picker-button[aria-pressed="true"] { border-color: #897044; background: #f4eddd; box-shadow: inset 2px 0 #ae8b4f; }
+    .myth-picker-category { color: #8b7957; font: 700 8px/1.3 var(--sans); letter-spacing: .08em; text-transform: uppercase; }
+    .myth-picker-title { font: 600 11px/1.4 var(--display); }
+    .myth-picker-reference { color: #878278; font: 500 8px/1.35 var(--sans); }
+    .myth-picker-expanded { margin-top: 8px; padding: 15px; border: 1px solid #d8c9a8; background: #fffefa; }
+    .myth-expanded-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .myth-expanded-heading h3 { margin: 4px 0 0; color: #2d3c40; font: 600 17px/1.35 var(--display); }
+    .myth-expanded-close { flex: none; padding: 7px 10px; border: 1px solid #d4cec1; background: #f8f5ed; color: #5a625e; cursor: pointer; font: 700 9px/1.3 var(--sans); }
+    .myth-expanded-close:hover { border-color: #ad8c51; background: #f1ecdf; }
+    .myth-expanded-close:focus-visible { outline: 2px solid #a57831; outline-offset: 2px; }
+    .myth-picker-expanded .myth-grid { margin-top: 0; }
+    .myth-no-results { grid-column: 1 / -1; margin: 0; padding: 18px; }
+
+    .myth-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; align-items: stretch; }
+    #myth-cards[hidden] { display: none; }
+    .myth-card { position: relative; min-width: 0; padding: 19px 18px 17px; border: 1px solid var(--line); background: var(--card); }
+    .myth-card::before { content: ""; position: absolute; top: -1px; left: 0; right: 0; height: 3px; background: #b8b1a1; }
+    .myth-card.layer-official::before { background: var(--sage); }
+    .myth-card.layer-variants::before { background: var(--gold); }
+    .myth-card.layer-graves::before { background: var(--terra); }
+    .card-kicker { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #818078; font: 700 9px/1.4 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+    .card-number { display: inline-grid; place-items: center; width: 25px; height: 25px; border: 1px solid #ded8cb; color: #8c7953; font: 600 10px/1 var(--display); }
+    .myth-card h3 { margin: 13px 0 9px; font: 600 16px/1.35 var(--display); color: #2d3c40; }
+    .myth-card .card-intro { margin: 0 0 12px; color: #555f60; font-size: 12px; line-height: 1.68; }
+    .myth-card ul { display: grid; gap: 8px; list-style: none; margin: 0; padding: 0; }
+    .myth-card li { display: grid; grid-template-columns: 7px 1fr; gap: 8px; color: #677071; font-size: 11px; line-height: 1.6; }
+    .myth-card li::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--gold); margin-top: 7px; }
+    .source-label { display: block; margin: 15px 0 7px; color: #898477; font: 700 8px/1.4 var(--sans); text-transform: uppercase; letter-spacing: .13em; }
+    .source-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+    .source-chip { padding: 4px 6px; border: 1px solid #e3ddcf; color: #69685e; background: #fbf8f0; font: 500 9px/1.3 var(--sans); }
+    .card-caveat { margin: 15px 0 0; padding: 9px 10px; border-left: 2px solid var(--terra); background: #fbf0ec; color: #765647; font-size: 10px; line-height: 1.6; }
+
+    .lexicon-tools { display: grid; grid-template-columns: minmax(240px, .75fr) minmax(0, 1.25fr); gap: 17px; align-items: end; margin: 18px 0 17px; }
+    .search-field { position: relative; }
+    .search-field svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #8b846e; pointer-events: none; }
+    input[type="search"] { min-height: 43px; padding: 10px 12px 10px 38px; font: 12px/1.4 var(--sans); }
+    input[type="search"]::placeholder { color: #a39c8f; }
+    .filter-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .filter-pill {
+      padding: 8px 11px; border: 1px solid #d9d2c4; background: transparent; color: #6e706b; cursor: pointer;
+      font: 600 9px/1.3 var(--sans); transition: .15s ease;
+    }
+    .filter-pill:hover { border-color: #aa8b54; color: #403c32; }
+    .filter-pill[aria-pressed="true"] { border-color: #34464a; color: #fff; background: #34464a; }
+    .results-line { display: flex; justify-content: space-between; align-items: center; margin: 0 0 12px; color: #858175; font: 600 9px/1.4 var(--sans); letter-spacing: .08em; text-transform: uppercase; }
+    .results-line strong { color: #61563f; font-size: 10px; }
+    .lexicon-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+    .lex-card { min-width: 0; border: 1px solid var(--line); background: #fffefa; padding: 17px 18px 15px; }
+    .lex-card-top { display: flex; align-items: start; justify-content: space-between; gap: 12px; border-bottom: 1px solid #eee9dd; padding-bottom: 9px; margin-bottom: 8px; }
+    .lex-card h3 { margin: 0; font: 600 16px/1.3 var(--display); }
+    .lex-kind { padding: 4px 7px; background: #f2eee4; color: #77705f; white-space: nowrap; font: 700 8px/1.3 var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+    .lex-summary { margin: 0 0 11px; color: #626b6b; font-size: 11px; }
+    .lex-facts { margin: 0; }
+    .lex-fact { display: grid; grid-template-columns: 125px 1fr; gap: 8px; padding: 7px 0; border-top: 1px dotted #e5dfd3; }
+    .lex-fact dt { color: #8c7953; font: 700 8px/1.5 var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+    .lex-fact dd { margin: 0; color: #586363; font-size: 10px; line-height: 1.55; }
+    .lex-refs { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 9px; }
+    .lex-refs span { color: #847d6f; font: 500 8px/1.3 var(--sans); }
+    .empty-state { padding: 28px; border: 1px dashed #d4cbb9; color: #77736a; text-align: center; font-size: 12px; }
+
+    .lab-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 14px; align-items: start; margin-top: 18px; }
+    .prompt-card { min-height: 312px; padding: 24px 23px 21px; color: #f6f1e6; background: #2d3c40; position: relative; overflow: hidden; }
+    .prompt-card::after { content: ""; position: absolute; width: 180px; height: 180px; border: 1px solid rgba(215,190,132,.16); border-radius: 50%; right: -80px; bottom: -95px; box-shadow: 0 0 0 16px rgba(215,190,132,.025), 0 0 0 34px rgba(215,190,132,.022); }
+    .prompt-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; position: relative; z-index: 1; }
+    .prompt-counter { color: #d8bf81; font: 700 9px/1.4 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+    .prompt-topic { padding: 5px 7px; border: 1px solid rgba(226,205,158,.3); color: #dcd0ad; font: 600 8px/1.3 var(--sans); letter-spacing: .07em; text-transform: uppercase; }
+    .prompt-card h3 { position: relative; z-index: 1; margin: 24px 0 12px; max-width: 480px; font: 500 clamp(18px, 2vw, 24px)/1.35 var(--display); color: #fffaf0; }
+    .prompt-card .prompt-context { position: relative; z-index: 1; color: #c9d0cb; font-size: 12px; line-height: 1.7; }
+    .prompt-hint { position: relative; z-index: 1; padding: 11px 12px; margin-top: 17px; border-left: 2px solid #c39e5b; color: #e4dbc3; background: rgba(255,255,255,.055); font-size: 10px; line-height: 1.65; }
+    .prompt-source { position: relative; z-index: 1; margin-top: 13px; color: #b5c0bb; font: 500 9px/1.5 var(--sans); }
+    .writing-card { padding: 20px; border: 1px solid var(--line); background: #fffefa; }
+    .writing-card h3 { margin: 0 0 5px; font: 600 14px/1.35 var(--display); }
+    .writing-card .write-instruction { margin: 0 0 12px; color: #777870; font-size: 10px; }
+    textarea { display: block; resize: vertical; min-height: 165px; padding: 12px 13px; font: 12px/1.65 var(--body); }
+    textarea::placeholder { color: #aaa497; }
+    .textarea-footer { display: flex; justify-content: space-between; gap: 10px; margin: 7px 0 13px; color: #8a867c; font: 500 9px/1.5 var(--sans); }
+    .action-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .button-primary, .button-secondary, .button-quiet {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 39px;
+      padding: 9px 13px; border: 1px solid transparent; cursor: pointer; transition: background .15s ease, color .15s ease, opacity .15s ease;
+      font: 700 9px/1.3 var(--sans); letter-spacing: .04em;
+    }
+    .button-primary { color: #fff; background: var(--terra); }
+    .button-primary:hover:not(:disabled) { background: #8d422f; }
+    .button-primary:disabled { cursor: not-allowed; opacity: .43; }
+    .button-secondary { color: #4f5e5e; border-color: #d4cec1; background: #f8f5ed; }
+    .button-secondary:hover { border-color: #9d8a64; background: #f1ecdf; }
+    .button-quiet { color: #77756d; border-color: transparent; background: transparent; }
+    .button-quiet:hover { color: var(--terra); background: #f8efeb; }
+    .button-primary svg, .button-secondary svg { width: 14px; height: 14px; }
+    .contrast-card { margin-top: 15px; padding: 16px; border: 1px solid #d9c6a5; background: #fbf5e9; }
+    .contrast-heading { display: flex; align-items: center; gap: 9px; margin: 0 0 11px; color: #715a30; font: 700 9px/1.4 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+    .contrast-heading::before { content: "✳"; color: var(--gold); font-size: 14px; }
+    .response-echo { padding: 10px 11px; margin: 0 0 12px; border-left: 2px solid #aeb8ae; background: rgba(255,255,255,.55); color: #626b69; font-size: 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .answer-copy { color: #525c5b; font-size: 11px; line-height: 1.7; }
+    .answer-copy p:last-child { margin-bottom: 0; }
+    .answer-copy strong { color: #3a4949; }
+    .contrast-check { margin-top: 12px; padding-top: 10px; border-top: 1px solid #e6dcc7; color: #76674d; font-size: 10px; }
+
+    .method-footer { padding: 19px 21px 20px; border-top: 1px solid var(--line); background: #f9f6ee; }
+    .method-footer-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 20px; }
+    .method-footer h2 { margin: 0 0 5px; color: #5b5140; font: 600 12px/1.4 var(--display); }
+    .method-footer p { margin: 0; color: #77766e; font-size: 10px; line-height: 1.7; }
+    .footer-refs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .footer-refs span { padding: 4px 7px; border: 1px solid #ded6c7; color: #777160; font: 500 8px/1.3 var(--sans); }
+    .page-footer { display: flex; justify-content: space-between; gap: 15px; padding: 0 0 30px; color: #858277; font: 500 9px/1.6 var(--sans); }
+    .page-footer span:last-child { text-align: right; }
+
+    @media (max-width: 920px) {
+      .myth-picker { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .myth-grid { grid-template-columns: 1fr; }
+      .myth-card { padding: 17px 18px; }
+      .hero-grid { grid-template-columns: minmax(0, 1.2fr) minmax(240px, .8fr); gap: 18px; }
+      .lexicon-tools { grid-template-columns: 1fr; }
+      .filter-row { justify-content: flex-start; }
+    }
+    @media (max-width: 680px) {
+      body { font-size: 14px; }
+      .masthead { padding: 14px 12px; }
+      .masthead::before, .masthead::after { width: 8vw; }
+      .brand-kicker { font-size: 8px; letter-spacing: .14em; }
+      .brand-line { font-size: 10px; }
+      .page-shell { width: min(100% - 22px, 1220px); }
+      .hero { padding: 29px 0 13px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 18px; }
+      .source-plaque { padding: 16px; }
+      .source-plaque h2 { font-size: 14px; }
+      .stat-row { gap: 6px; margin-top: 17px; }
+      .stat-item { flex: 1 1 30%; min-width: 95px; padding: 7px 8px; }
+      .stat-label { font-size: 8px; }
+      .app-frame { margin: 12px 0 26px; }
+      .tabs-wrap { padding: 0 7px; }
+      .tab-list { gap: 0; }
+      .tab-button { padding: 13px 11px 10px; gap: 7px; font-size: 10px; }
+      .tab-number { width: 19px; height: 19px; font-size: 8px; }
+      .tab-panel { padding: 21px 13px 22px; }
+      .section-top { align-items: start; margin-bottom: 15px; }
+      .section-top p { font-size: 11px; }
+      .section-index { font-size: 16px; }
+      .notice { font-size: 10px; padding: 9px 10px; }
+      .control-row { align-items: stretch; gap: 9px; }
+      .field-group { min-width: 100%; }
+      .myth-controls .field-group { flex-basis: 100%; min-width: 100%; }
+      .myth-reference { margin: 0; align-self: flex-start; }
+      .myth-catalog-panel { padding: 11px 9px; }
+      .myth-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+      .myth-picker-button { min-height: 75px; padding: 8px; }
+      .myth-picker-title { font-size: 10px; }
+      .myth-picker-expanded { padding: 11px 9px; }
+      .myth-expanded-heading { align-items: flex-start; }
+      .myth-expanded-heading h3 { font-size: 15px; }
+      .lexicon-grid { grid-template-columns: 1fr; }
+      .lexicon-tools { gap: 12px; }
+      .filter-pill { padding: 7px 9px; }
+      .lex-fact { grid-template-columns: 104px 1fr; gap: 7px; }
+      .lab-grid { grid-template-columns: 1fr; gap: 11px; }
+      .prompt-card { min-height: auto; padding: 19px 18px; }
+      .prompt-card h3 { margin: 18px 0 9px; font-size: 18px; }
+      .prompt-hint { margin-top: 13px; }
+      .writing-card { padding: 15px; }
+      textarea { min-height: 145px; }
+      .method-footer { padding: 15px 13px; }
+      .method-footer-grid { grid-template-columns: 1fr; gap: 14px; }
+      .page-footer { flex-direction: column; gap: 7px; }
+      .page-footer span:last-child { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="masthead">
+    <div class="masthead-inner flex items-center justify-center">
+      <svg class="brand-seal" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="16.5" fill="none" stroke="currentColor" stroke-width=".9"/>
+        <circle cx="20" cy="20" r="12.3" fill="none" stroke="currentColor" stroke-width=".7" stroke-dasharray="1.1 2.7"/>
+        <path d="M20 8.5 22.3 17.7 31.5 20 22.3 22.3 20 31.5 17.7 22.3 8.5 20 17.7 17.7Z" fill="none" stroke="currentColor" stroke-width=".85"/>
+        <circle cx="20" cy="20" r="2.1" fill="currentColor"/>
+      </svg>
+      <div>
+        <div class="brand-kicker">Mythos &amp; Aitiologia</div>
+        <div class="brand-line">El Sistema Graves de Mitología Griega</div>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenido" class="page-shell mx-auto">
+    <section class="hero" aria-labelledby="main-title">
+      <div class="hero-grid grid">
+        <div>
+          <div class="eyebrow">Mitografía · fuentes · lectura crítica</div>
+          <h1 id="main-title">Mythos &amp; Aitiologia</h1>
+          <p class="hero-subtitle">El Sistema Graves de Mitología Griega</p>
+          <p class="hero-copy">
+            Un gabinete de lectura para seguir el mito en <strong>tres estratos</strong>: el relato olímpico más difundido,
+            sus testimonios locales y la reconstrucción comparativa propuesta por Robert Graves. Explora, contrasta y formula tu propia hipótesis.
+          </p>
+          <div class="stat-row flex flex-wrap" aria-label="Datos de esta edición digital">
+            <div class="stat-item"><span class="stat-number" id="catalog-stat">31</span><span class="stat-label">fichas del catálogo</span></div>
+            <div class="stat-item"><span class="stat-number">02</span><span class="stat-label">tomos de referencia</span></div>
+            <div class="stat-item"><span class="stat-number">03</span><span class="stat-label">modos de lectura</span></div>
+          </div>
+        </div>
+        <aside class="source-plaque" aria-label="Nota sobre el corpus">
+          <span class="overline">Cuaderno de fuentes</span>
+          <h2>Una lectura comparada, no un canon cerrado.</h2>
+          <p>La base son los dos tomos de <em>Los mitos griegos</em> adjuntos. Graves reúne testimonios antiguos y los enlaza con hipótesis antropológicas propias: aquí se distinguen unas cosas de otras.</p>
+          <div class="plaque-foot">
+            <span class="tiny-tag">Pausanias</span><span class="tiny-tag">Apolodoro</span><span class="tiny-tag">Hesíodo</span><span class="tiny-tag">Himnos homéricos</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="app-frame" aria-label="Herramientas de estudio">
+      <div class="frame-topline" aria-hidden="true"></div>
+      <div class="tabs-wrap">
+        <div class="tab-list flex" role="tablist" aria-label="Secciones de Mythos & Aitiologia">
+          <button class="tab-button" id="tab-matrix" type="button" role="tab" aria-controls="panel-matrix" aria-selected="true" tabindex="0" data-tab="matrix">
+            <span class="tab-number">01</span><span>Variant Matrix</span>
+          </button>
+          <button class="tab-button" id="tab-lexicon" type="button" role="tab" aria-controls="panel-lexicon" aria-selected="false" tabindex="-1" data-tab="lexicon">
+            <span class="tab-number">02</span><span>Gravesian Lexicon</span>
+          </button>
+          <button class="tab-button" id="tab-lab" type="button" role="tab" aria-controls="panel-lab" aria-selected="false" tabindex="-1" data-tab="lab">
+            <span class="tab-number">03</span><span>Laboratorio aitiológico</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Pestaña 1: comparación de relato, fuentes y lectura mitográfica. -->
+      <section class="tab-panel" id="panel-matrix" role="tabpanel" aria-labelledby="tab-matrix" tabindex="0">
+        <div class="section-top">
+          <div>
+            <span class="overline">The Variant Matrix · atlas de relatos</span>
+            <h2>Explorador de mitos y variantes</h2>
+            <p>Explora el repertorio, busca por título, personaje, tema o fuente, y compara las tres capas de lectura de cada relato.</p>
+          </div>
+          <span class="section-index" aria-hidden="true">I / III</span>
+        </div>
+        <div class="notice" role="note">
+          <span class="notice-mark" aria-hidden="true">!</span>
+          <span><strong>Precisión de método:</strong> no existe una única versión antigua “oficial”. El primer panel es una síntesis pedagógica de tradiciones conocidas; las fuentes antiguas discrepan en detalles, cronología y lugar.</span>
+        </div>
+        <div class="control-row myth-controls">
+          <label class="field-group" for="myth-search">
+            <span class="field-label">Buscar en el repertorio <span class="field-hint">por título, personaje, tema o fuente</span></span>
+            <span class="search-field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5" stroke-linecap="round"/></svg>
+              <input type="search" id="myth-search" placeholder="Ej. Ariadna, oráculo, serpiente…" autocomplete="off" aria-describedby="myth-search-count">
+            </span>
+          </label>
+          <label class="field-group" for="myth-select">
+            <span class="field-label">O selecciona un mito</span>
+            <select id="myth-select" aria-label="Selecciona un mito para explorar"></select>
+          </label>
+          <div class="myth-reference" id="myth-reference" aria-live="polite"></div>
+        </div>
+        <div class="myth-catalog-panel">
+          <div class="myth-catalog-heading">
+            <span class="field-label">Índice navegable</span>
+            <span class="myth-search-count" id="myth-search-count" aria-live="polite"></span>
+          </div>
+          <p class="myth-index-hint">Un clic selecciona el mito; doble clic (o pulsa Enter sobre una tarjeta) para desplegar aquí su ficha completa.</p>
+          <div class="myth-picker" id="myth-picker" role="group" aria-label="Mitos disponibles; selecciona una ficha"></div>
+        </div>
+        <div class="myth-grid grid" id="myth-cards" aria-live="polite"></div>
+      </section>
+
+      <!-- Pestaña 2: léxico filtrable, basado en notas y comentarios de Graves. -->
+      <section class="tab-panel" id="panel-lexicon" role="tabpanel" aria-labelledby="tab-lexicon" tabindex="0" hidden>
+        <div class="section-top">
+          <div>
+            <span class="overline">The Gravesian Lexicon · índice de símbolos</span>
+            <h2>Diccionario etimológico y simbólico</h2>
+            <p>Busca en tiempo real nombres, cultos, animales y motivos. Cada ficha indica qué propone Graves y dónde lo discute.</p>
+          </div>
+          <span class="section-index" aria-hidden="true">II / III</span>
+        </div>
+        <div class="notice" role="note">
+          <span class="notice-mark" aria-hidden="true">!</span>
+          <span><strong>Advertencia filológica:</strong> varias etimologías y reconstrucciones de sustrato que Graves propone son conjeturales y no equivalen a consenso lingüístico o histórico. Cuando no propone una etimología del nombre, la ficha lo dice explícitamente.</span>
+        </div>
+        <div class="lexicon-tools">
+          <label class="field-group" for="lexicon-search">
+            <span class="field-label">Buscar en el léxico</span>
+            <span class="search-field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5" stroke-linecap="round"/></svg>
+              <input type="search" id="lexicon-search" placeholder="Ej. serpiente, grano, Apolo…" autocomplete="off" aria-describedby="lexicon-count">
+            </span>
+          </label>
+          <div class="filter-row" role="group" aria-label="Filtrar entradas del léxico">
+            <button class="filter-pill" type="button" data-filter="all" aria-pressed="true">Todas</button>
+            <button class="filter-pill" type="button" data-filter="deidad" aria-pressed="false">Deidades</button>
+            <button class="filter-pill" type="button" data-filter="heroe" aria-pressed="false">Héroes</button>
+            <button class="filter-pill" type="button" data-filter="simbolo" aria-pressed="false">Símbolos</button>
+            <button class="filter-pill" type="button" data-filter="culto" aria-pressed="false">Cultos</button>
+          </div>
+        </div>
+        <div class="results-line"><span>Entradas del corpus</span><strong id="lexicon-count" aria-live="polite"></strong></div>
+        <div class="lexicon-grid grid" id="lexicon-grid" aria-live="polite"></div>
+        <div class="empty-state" id="lexicon-empty" hidden>No hay entradas que coincidan. Prueba otro término o filtro.</div>
+      </section>
+
+      <!-- Pestaña 3: pregunta aleatoria, hipótesis del usuario y contraste con Graves. -->
+      <section class="tab-panel" id="panel-lab" role="tabpanel" aria-labelledby="tab-lab" tabindex="0" hidden>
+        <div class="section-top">
+          <div>
+            <span class="overline">Evaluación socrática · cuaderno de hipótesis</span>
+            <h2>Laboratorio de análisis aitiológico</h2>
+            <p>Interroga el mito como posible registro ritual o político y contrasta tu argumento con la lectura que Graves formula en sus comentarios.</p>
+          </div>
+          <span class="section-index" aria-hidden="true">III / III</span>
+        </div>
+        <div class="notice" role="note">
+          <span class="notice-mark" aria-hidden="true">!</span>
+          <span>La respuesta modelo es la <strong>clave de interpretación de Graves</strong>, no una solución única ni un hecho demostrado. El ejercicio consiste también en evaluar sus evidencias, sus saltos inferenciales y las explicaciones alternativas.</span>
+        </div>
+        <div class="lab-grid grid">
+          <article class="prompt-card" aria-labelledby="question-title">
+            <div class="prompt-top">
+              <span class="prompt-counter" id="question-counter">Pregunta</span>
+              <span class="prompt-topic" id="question-topic">LECTURA CRÍTICA</span>
+            </div>
+            <h3 id="question-title"></h3>
+            <p class="prompt-context" id="question-context"></p>
+            <div class="prompt-hint"><strong>Para orientar la lectura</strong><br><span id="question-hint"></span></div>
+            <div class="prompt-source" id="question-source"></div>
+          </article>
+          <div class="writing-card">
+            <h3>Redacta una hipótesis</h3>
+            <p class="write-instruction" id="hypothesis-instruction">Formula una afirmación y señala qué elemento del relato podría sostenerla. Tu texto se guarda solo en este navegador.</p>
+            <label class="field-label" for="hypothesis">Tu lectura</label>
+            <textarea id="hypothesis" rows="7" placeholder="Escribe aquí tu hipótesis analítica…" aria-describedby="hypothesis-instruction char-count"></textarea>
+            <div class="textarea-footer"><span id="char-count">0 caracteres</span><span>mínimo 20 para contrastar</span></div>
+            <div class="action-row flex flex-wrap">
+              <button class="button-primary" id="reveal-contrast" type="button" disabled>
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Contrastar con Graves
+              </button>
+              <button class="button-secondary" id="next-question" type="button">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M15.5 7.5A6 6 0 1 0 16 11M15.5 4v3.5H12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Nueva cuestión
+              </button>
+              <button class="button-quiet" id="clear-hypothesis" type="button">Borrar borrador</button>
+            </div>
+            <section class="contrast-card" id="contrast-card" aria-live="polite" hidden>
+              <h4 class="contrast-heading">Contraste interpretativo</h4>
+              <div class="response-echo" id="hypothesis-echo"></div>
+              <div class="answer-copy">
+                <p><strong>Según Graves:</strong> <span id="answer-key"></span></p>
+              </div>
+              <div class="contrast-check"><strong>Pregunta de control:</strong> <span id="critical-check"></span></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <aside class="method-footer" aria-label="Criterios editoriales y bibliografía">
+        <div class="method-footer-grid">
+          <div>
+            <h2>Cómo leer este sistema</h2>
+            <p>Las referencias internas siguen la numeración de mitos y comentarios de Graves (por ejemplo, <em>I, 24.3</em> = tomo I, mito 24, comentario 3). La capa de “variantes” resume fuentes antiguas nombradas en sus notas; la lectura antropológica se atribuye siempre a Graves.</p>
+          </div>
+          <div>
+            <h2>Base de referencia</h2>
+            <p>Robert Graves, <em>Los mitos griegos</em>, tomos I–II, en los archivos PDF proporcionados. La aplicación parafrasea y organiza; no sustituye la consulta de los textos antiguos ni de la obra completa.</p>
+            <div class="footer-refs"><span>Comentario = hipótesis de autor</span><span>Fuente antigua ≠ interpretación</span></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <footer class="page-footer">
+      <span>Mythos &amp; Aitiologia · archivo de estudio sin cuenta ni instalación</span>
+      <span>El CSS y los datos son locales; las fuentes tipográficas y Tailwind son mejoras opcionales por CDN.</span>
+    </footer>
+  </main>
+
+  <script>
+    /* ================================================================
+       Datos semilla: resúmenes propios y referencias de los PDF adjuntos.
+       No se reproducen pasajes extensos de la obra.
+       ================================================================ */
+    const MYTHS = {
+      persephone: {
+        title: "El rapto de Perséfone",
+        reference: "Graves · tomo I, mito 24: «Naturaleza y hechos de Deméter»",
+        official: {
+          intro: "Core recoge flores cuando la tierra se abre y Hades la lleva al inframundo. Deméter, diosa del cereal, interrumpe el crecimiento de la tierra hasta que su hija vuelva. La granada vincula a Core con el reino de los muertos; Zeus negocia un retorno periódico.",
+          points: [
+            "La separación de madre e hija da forma narrativa a la desaparición y el retorno del grano.",
+            "El Himno homérico hace que Perséfone pase una parte del ciclo con Hades y el resto junto a Deméter; las proporciones cambian entre testimonios.",
+            "El relato articula los Misterios de Eleusis y la esperanza de renovación, sin que todas las fuentes expliquen del mismo modo el rito."
+          ],
+          sources: ["Himno homérico a Deméter", "Apolodoro, Biblioteca 1.5.1–3", "Ovidio, Metamorfosis 5"]
+        },
+        variants: {
+          intro: "Graves preserva desacuerdos locales y de nomenclatura en vez de fundirlos en una única escena estable.",
+          points: [
+            "El rapto se sitúa, según las tradiciones que enumera, en Enna (Sicilia), Eleusis, Colono, Hermione, Creta, Pisa, Lerna o Nisa; los sacerdotes eleusinos defendían Eleusis.",
+            "En su relato, Core prueba siete semillas de granada y el acuerdo final le asigna tres meses a Hades y nueve con Deméter; no es la única proporción transmitida en la Antigüedad.",
+            "Las versiones difieren también en quién informa a Deméter, qué papel juega Zeus y cómo se relacionan Core, Perséfone y Hécate."
+          ],
+          sources: ["Pausanias 1.14.2; 1.37.2", "Himno homérico a Deméter", "Apolodoro 1.5", "Ovidio, Metamorfosis 5.450–563", "Higino, Fábula 146"]
+        },
+        graves: {
+          intro: "Graves interpreta el relato como la superposición de un ciclo agrario antiguo y una reforma del poder religioso.",
+          points: [
+            "En I, 24.1, lee a Core, Perséfone y Hécate como una figura triple del cereal: grano verde, espiga madura y cosecha recogida.",
+            "En I, 24.3, entiende la unión forzada de Hades con Core como una imagen del desplazamiento masculino de misterios agrícolas antes administrados por mujeres.",
+            "El descenso y el retorno de una figura de cereal hacen legible el enterramiento invernal de la semilla y su germinación; Graves vincula además el rito de Deméter con la siembra."
+          ],
+          sources: ["Graves I, 24.1–3", "Hesíodo, Trabajos y días 432–433, 460, 462", "Pausanias 1.14.2; 1.37.2"],
+          caveat: "Esta reconstrucción del matriarcado y de un rito agrario es la tesis comparativa de Graves; no debe presentarse como consenso histórico establecido."
+        }
+      },
+      heracles: {
+        title: "Los trabajos de Heracles",
+        reference: "Graves · tomo II, mitos 118–145; trabajos 123–134",
+        official: {
+          intro: "Tras la locura que le envía Hera, Heracles queda al servicio de Euristeo. La serie de hazañas —que la tradición posterior fija en doce— lo lleva desde el león de Nemea y la Hidra hasta las manzanas de las Hespérides y la captura de Cerbero.",
+          points: [
+            "La lista más difundida incluye animales, monstruos, limpieza de establos, una expedición de ganado y un descenso al mundo subterráneo.",
+            "La secuencia y el número de trabajos se estabilizan a partir de relatos transmitidos por distintos autores; no es un catálogo homérico único e invariable.",
+            "En el séptimo trabajo, el toro de Creta es llevado a Grecia y reaparece en la historia de Teseo y el toro de Maratón."
+          ],
+          sources: ["Apolodoro, Biblioteca 2.5.1–12", "Diodoro Sículo 4.11–26", "Pausanias 2.15.2–3"]
+        },
+        variants: {
+          intro: "Graves combina relatos de numerosas ciudades e insiste en las divergencias sobre qué animal, rey o episodio corresponde a cada hazaña.",
+          points: [
+            "El toro cretense del séptimo trabajo puede ser el toro relacionado con Europa o el animal que Minos no sacrificó y que Pasífae concibió como padre del Minotauro (Graves II, 129).",
+            "En la cuenta de los doce, Euristeo rechaza dos trabajos —la Hidra y los establos de Augías— por la ayuda recibida o la recompensa; por ello encarga tareas adicionales.",
+            "Los relatos de los trabajos citan variantes de Apolodoro, Diodoro, Pausanias, Hesíodo, Teócrito y otros; las genealogías, lugares y desenlaces no son uniformes."
+          ],
+          sources: ["Apolodoro 2.5", "Diodoro Sículo 4.11–26", "Pausanias 2.15.2–3", "Hesíodo, Teogonía", "Teócrito, Idilio 25"]
+        },
+        graves: {
+          intro: "Graves no reduce la serie a una biografía lineal: la lee como un archivo de ritos y cultos locales ensamblado en la saga de un héroe.",
+          points: [
+            "En II, 132.1, propone que las hazañas funcionaban como pruebas rituales previas a la aceptación del héroe como consorte de una reina; ofrece distintos nombres de esa figura femenina según el ciclo.",
+            "En II, 123.1, interpreta varios animales como emblemas estacionales: dominar las fieras equivale, en su hipótesis, a dominar el ciclo del año.",
+            "En II, 129.1, trata la lucha con el toro como rito de coronación y relaciona el contacto con los cuernos con fertilidad y lluvia."
+          ],
+          sources: ["Graves II, 123.1", "Graves II, 129.1", "Graves II, 132.1", "Graves II, 123–134"],
+          caveat: "La lectura ritual y matrimonial es una propuesta mitográfica de Graves, no una explicación demostrada de cada trabajo ni una interpretación aceptada por todos los especialistas."
+        }
+      },
+      paris: {
+        title: "El juicio de Paris",
+        reference: "Graves · tomo II, mito 159: «París y Helena»",
+        official: {
+          intro: "En la boda de Peleo y Tetis, Eris arroja una manzana destinada «a la más bella». Hera, Atenea y Afrodita reclaman el premio. Hermes lleva a las diosas ante Paris en el Ida; él elige a Afrodita, que le promete a Helena, y el episodio se enlaza con la expedición contra Troya.",
+          points: [
+            "El llamado Juicio de Paris pertenece al ciclo troyano y su narración extensa no está en la Ilíada conservada.",
+            "La elección, los dones prometidos y el juramento de los pretendientes de Helena ofrecen distintos puntos de partida para la guerra.",
+            "El rapto o fuga de Helena se cuenta de más de una manera; las fuentes discrepan sobre el consentimiento, la ruta y su presencia en Troya."
+          ],
+          sources: ["Ciprias (resumen de Proclo)", "Apolodoro, Epítome 3.1–5", "Higino, Fábula 92"]
+        },
+        variants: {
+          intro: "Graves reúne versiones épicas, trágicas e historiográficas que hacen inestable la explicación simple de «Paris raptó a Helena».",
+          points: [
+            "La tradición atribuida a Estesícoro sostiene que Helena nunca llegó a Troya: allí habría ido un fantasma; Graves la relaciona con la Helena de Eurípides.",
+            "En el relato que transmite Heródoto (2.112–120), Paris llega a Egipto y Proteo retiene a Helena hasta que Menelao la reclama.",
+            "Apolodoro, las Ciprias y otros testimonios divergen sobre cómo se da el juicio, quién auxilia a Paris y si Helena huye, es raptada o es sustituida por una imagen."
+          ],
+          sources: ["Estesícoro (fragmento)", "Platón, Fedro 243a", "Pausanias 3.19.5", "Heródoto 2.112–120", "Eurípides, Helena"]
+        },
+        graves: {
+          intro: "Graves somete el episodio a su método iconográfico: plantea que una narración famosa pudo nacer de la lectura errónea de una imagen ritual.",
+          points: [
+            "En II, 159.3, propone que el concurso de belleza fue deducido de una imagen distinta —entre sus alternativas, Heracles recibiendo manzanas de las Hespérides— y niega que Paris entregara originalmente la manzana a una diosa.",
+            "En II, 159.1, sugiere que Helena pudo ser una diosa lunar espartana y que «la Helena» de Troya quizá fuera un fantasma, como en la versión de Estesícoro.",
+            "En II, 159.2, ensaya una reinterpretación etimológica del juramento de los pretendientes como una alianza para navegar el Helesponto; la usa para leer el ciclo como memoria política y marítima."
+          ],
+          sources: ["Graves II, 159.1–3", "Ciprias", "Estesícoro", "Heródoto 2.112–120"],
+          caveat: "La explicación iconográfica y el juego con la expresión griega son conjeturas de Graves, muy discutibles; deben distinguirse del testimonio antiguo y de la historia comprobable."
+        }
+      },
+      minotaur: {
+        title: "Teseo y el Minotauro",
+        reference: "Graves · tomo I, mitos 88, 90 y 98; tomo II, mito 129",
+        official: {
+          intro: "Minos obtiene el trono de Creta con ayuda de un toro enviado por Posidón, pero no lo sacrifica como había prometido. El castigo divino desencadena el nacimiento del Minotauro, que Dédalo oculta en el Laberinto. Teseo llega entre los jóvenes atenienses destinados al tributo y, con ayuda de Ariadna, mata al monstruo y encuentra la salida.",
+          points: [
+            "El Minotauro —Asterio o Asterión en algunas fuentes— es hijo de Pasífae y un toro; las fuentes discrepan en genealogía y detalles.",
+            "El tributo suele ser de siete jóvenes y siete doncellas; el intervalo y las condiciones varían entre relatos.",
+            "El hilo, la espada o la clava aparecen en distintas versiones de la lucha; el destino de Ariadna también cambia."
+          ],
+          sources: ["Apolodoro 3.1.3–4; Epítome 1.7–9", "Diodoro Sículo 4.61", "Higino, Fábula 41", "Plutarco, Teseo 15–21"]
+        },
+        variants: {
+          intro: "En el mismo Graves conviven el monstruo taurino y una racionalización política en la que la bestia puede ser un hombre llamado Tauro.",
+          points: [
+            "Minos habría ofendido a Posidón al no sacrificar el mejor toro; otros relatos atribuyen la ira a Zeus o al descuido del culto de Afrodita (Graves I, 88.e–f).",
+            "En la versión atribuida a cretenses, el Laberinto sería una prisión para los atenienses destinados a los juegos fúnebres de Androgeo; Tauro, general de Minos, sería el rival de Teseo, no un híbrido (Graves I, 98.p).",
+            "Hay relatos en que Teseo derrota a Tauro en lucha, y otros en que el Minotauro es atado y llevado a Atenas. Graves cita, entre otros, a Plutarco, Filócoro, Pausanias, Diodoro y Apolodoro."
+          ],
+          sources: ["Plutarco, Teseo 15–21", "Filócoro (citado por Plutarco)", "Pausanias 2.31.1", "Diodoro Sículo 4.61", "Apolodoro, Epítome 1.7–9"]
+        },
+        graves: {
+          intro: "Graves relee el conjunto como posible recuerdo de una relación política entre Creta y Atenas, reformulada como hazaña heroica.",
+          points: [
+            "En I, 98.1, presenta la leyenda como memoria posible de una rebelión ateniense contra el dominio cretense: tributo o rehenes, conflicto en Cnosos y acuerdo político ligado al matrimonio con Ariadna.",
+            "En I, 98.2, Minos sería un título dinástico; el Minotauro, Tauro y la captura del toro podrían ser variantes de un mismo conflicto o de un rito asociado al poder cretense.",
+            "El palacio complejo de Cnosos y una pista de danza de trazado laberíntico pudieron contribuir, según Graves, a la imagen del Laberinto; además vincula el toro con la autoridad ritual del rey."
+          ],
+          sources: ["Graves I, 88.1", "Graves I, 98.1–6", "Graves II, 129.1", "Plutarco, Teseo 15–21"],
+          caveat: "La reconstrucción de una revuelta hacia 1400 a. C. y la equivalencia entre monstruo, general y rito son hipótesis de Graves, no una identificación histórica demostrada."
+        }
+      }
+    };
+
+    /* Ampliación del atlas: relatos y ciclos localizados en los dos tomos de Graves. */
+    const ADDITIONAL_MYTHS = {
+      pelasgian: {
+        title: "El mito pelasgo de la Creación",
+        reference: "Graves · tomo I, mito 1: «El mito pelasgo de la Creación»",
+        official: {
+          intro: "En la cosmogonía que Graves reconstruye a partir de testimonios fragmentarios, Eurínome surge del Caos, danza sobre el mar y engendra con la serpiente Ofión el Huevo Universal, del que nace el mundo.",
+          points: ["La diosa separa mar y firmamento; el viento del norte adopta la forma de Ofión.", "Eurínome pone el huevo cósmico y Ofión lo envuelve hasta que se abre y aparecen los seres celestes y terrestres.", "Cuando Ofión reclama la autoría de la creación, Eurínome lo expulsa: el relato no coincide con la cosmogonía olímpica más conocida."],
+          sources: ["Apolonio de Rodas, Argonáuticas 1.496–505", "Tzetzes, Sobre Licofrón 1191", "Graves I, 1.1–2"]
+        },
+        variants: {
+          intro: "El propio Graves presenta junto a este relato otras cosmogonías griegas; no existió un único relato antiguo de la creación.",
+          points: ["En la versión homérica, Océano y Tetis son el origen de los dioses; los órficos hacen nacer a Fanes de un huevo primordial.", "La Teogonía de Hesíodo organiza el origen desde Caos, Gea, Tártaro y Eros, y cuenta luego la sucesión de Urano, Crono y Zeus.", "Las fuentes que conservan el relato pelasgo son alusivas o tardías, por lo que la narración completa depende en gran medida de la síntesis de Graves."],
+          sources: ["Homero, Ilíada 14.201, 14.246", "Hesíodo, Teogonía 116–138", "Graves I, 1–4"]
+        },
+        graves: {
+          intro: "Graves convierte los fragmentos dispersos en una reconstrucción comparativa de religión prehelénica.",
+          points: ["Propone a Eurínome como diosa creadora y a Ofión como serpiente demiúrgica, comparando motivos griegos, cananeos y próximo-orientales.", "Relaciona el huevo, la paloma y la serpiente con imágenes rituales y con un orden religioso centrado en una diosa.", "Su propuesta combina textos, mitos comparados e interpretaciones históricas que van más allá de lo que atestigua directamente cada fuente antigua."],
+          sources: ["Graves I, 1.1–5", "Apolonio de Rodas, Argonáuticas 1.496–505"],
+          caveat: "La cosmogonía completa y el sistema religioso que Graves infiere son una reconstrucción suya; los fragmentos antiguos no prueban por sí solos ese modelo."
+        }
+      },
+      uranus: {
+        title: "La castración de Urano",
+        reference: "Graves · tomo I, mito 6: «La castración de Urano»",
+        official: {
+          intro: "Urano oculta a sus hijos en el interior de Gea. Esta, harta de su violencia, entrega a Crono una hoz de pedernal; Crono sorprende a su padre y lo castra.",
+          points: ["La sangre caída sobre Gea engendra a las Erinias, las ninfas Melíades y, en algunas genealogías, a los Gigantes.", "Los genitales arrojados al mar producen la espuma de la que nace Afrodita en la versión de Hesíodo.", "Crono libera a los Cíclopes y recibe la soberanía, pero volverá a encerrarlos."],
+          sources: ["Hesíodo, Teogonía 133–206", "Apolodoro, Biblioteca 1.1.4–5", "Graves I, 6"]
+        },
+        variants: {
+          intro: "Las genealogías y el destino de los hijos de la sangre de Urano varían entre las fuentes; Graves destaca paralelos anatolios.",
+          points: ["Hesíodo hace nacer de la sangre a las Erinias, las Melíades y los Gigantes; Apolodoro resume la sucesión sin desarrollar todos esos nacimientos.", "En la teogonía hurrita, Kumarbi castra al dios celeste Anu: el parecido no implica que ambos relatos sean idénticos.", "La hoz, la localización del episodio y la identificación de las divinidades cambian al pasar de una tradición a otra."],
+          sources: ["Hesíodo, Teogonía 176–206", "Apolodoro 1.1.4–5", "Graves I, 6.1, 6.6"]
+        },
+        graves: {
+          intro: "Graves lee la castración como un relato de cambio de soberanía y la compara con tradiciones del Próximo Oriente.",
+          points: ["Relaciona la versión hesiódica con el relato hurrita de Anu y Kumarbi y con conflictos entre poblaciones y cultos de distintas épocas.", "Interpreta las Erinias, las ninfas del fresno y la hoz dentro de un esquema de realeza ritual, fertilidad y culto arbóreo.", "Su reconstrucción conecta el mito con movimientos históricos y prácticas rituales que las fuentes narrativas no describen como hechos comprobados."],
+          sources: ["Graves I, 6.1–6", "Hesíodo, Teogonía 133–206"],
+          caveat: "La lectura histórico-ritual de Graves es una hipótesis comparativa, no un consenso sobre el origen del mito."
+        }
+      },
+      cronus: {
+        title: "El destronamiento de Crono y el ascenso de Zeus",
+        reference: "Graves · tomo I, mito 7: «El destronamiento de Crono»",
+        official: {
+          intro: "Crono teme que uno de sus hijos lo destrone y devora a Hestia, Deméter, Hera, Hades y Posidón. Rea salva al menor, Zeus, y entrega a Crono una piedra envuelta en pañales.",
+          points: ["Zeus crece oculto en Creta y, con ayuda de Metis, obliga a Crono a devolver a sus hermanos.", "Los dioses olímpicos vencen a los Titanes tras liberar a los Cíclopes y a los Hecatónquiros.", "Las fuentes discrepan sobre la crianza de Zeus, sus protectores y el lugar de la batalla final."],
+          sources: ["Hesíodo, Teogonía 453–506, 617–735", "Apolodoro, Biblioteca 1.1.5–7", "Graves I, 7"]
+        },
+        variants: {
+          intro: "Graves reúne tradiciones cretenses, arcadias y hesiódicas sobre la infancia de Zeus y la guerra divina.",
+          points: ["Amaltea puede ser cabra o ninfa; los Curetes hacen chocar sus armas para ocultar el llanto del niño, aunque no todos los relatos incluyen a ambos.", "La piedra que Crono traga se identifica después con el ónfalo de Delfos; las fuentes difieren en quién la coloca allí.", "En la Titanomaquia, la alianza y el reparto posterior del mundo se cuentan con variaciones entre Hesíodo, Apolodoro y otros mitógrafos."],
+          sources: ["Hesíodo, Teogonía 453–506, 617–735", "Calímaco, Himno a Zeus", "Pausanias 8.36.2, 8.38.2", "Graves I, 7.1–10"]
+        },
+        graves: {
+          intro: "Graves lee la lucha como memoria de cambios religiosos y políticos, no como una crónica literal de una guerra entre dioses.",
+          points: ["Relaciona el ocultamiento de Zeus y los Curetes con ritos cretenses y con la sustitución de víctimas sacrificiales por animales.", "Interpreta la victoria olímpica como ascenso de cultos helénicos sobre cultos anteriores; ofrece una cronología histórica tentativa.", "Lee a Zeus, Posidón y Hades como figuras asociadas a sucesivas capas de poder y a la apropiación de antiguos cultos del roble y del fresno."],
+          sources: ["Graves I, 7.1–10", "Hesíodo, Teogonía 485–506"],
+          caveat: "La secuencia de invasiones, sacrificios regios y cambios de culto que propone Graves no se deduce de manera concluyente del relato."
+        }
+      },
+      athenaBirth: {
+        title: "El nacimiento de Atenea y Zeus con Metis",
+        reference: "Graves · tomo I, mitos 8–9: «El nacimiento de Atenea» y «Zeus y Metis»",
+        official: {
+          intro: "Zeus se une a Metis, diosa de la prudencia, pero una profecía anuncia que su descendencia podría superarlo. Zeus la devora; más tarde Hefesto abre la cabeza del dios y de ella surge Atenea, armada.",
+          points: ["La profecía sobre el hijo de Metis difiere según la tradición y explica por qué Zeus intenta evitar un nuevo destronamiento.", "Atenea nace adulta y equipada para la guerra; en otra tradición su nacimiento se vincula con el lago Tritonis de Libia.", "El episodio reúne relatos distintos sobre la filiación, la sabiduría y el origen de la diosa."],
+          sources: ["Hesíodo, Teogonía 886–900", "Apolodoro, Biblioteca 1.3.6; 3.12.3", "Graves I, 8–9"]
+        },
+        variants: {
+          intro: "Graves contrapone la diosa nacida de Metis, la hija de Zeus y la Atenea libia criada por ninfas.",
+          points: ["En el relato pelasgo que recoge Graves, Atenea crece junto al lago Tritonis y adopta el nombre de Palas tras la muerte accidental de su compañera.", "Apolodoro la hace hija de Zeus y criada por el dios-río Tritón; otras genealogías la relacionan directamente con Metis.", "El lugar de nacimiento, la identidad de Palas y la relación de Atenea con Zeus cambian entre las fuentes."],
+          sources: ["Apolonio de Rodas, Argonáuticas 4.1310–1317", "Apolodoro 3.12.3", "Platón, Timeo 21e", "Graves I, 8–9"]
+        },
+        graves: {
+          intro: "Graves trata el nacimiento de la cabeza de Zeus como una reelaboración patriarcal de tradiciones sobre una diosa sabia.",
+          points: ["Sostiene que Hesíodo concilia versiones anteriores al hacer a Atenea hija de Metis y, a la vez, hija de Zeus.", "Compara a Atenea con la diosa libia Neith y con figuras de la tríada lunar, y relaciona su égida con una iconografía previa.", "Presenta la subordinación de Atenea a Zeus como parte de un cambio religioso; es una interpretación de Graves, no una conclusión inscrita en todas las fuentes."],
+          sources: ["Graves I, 8.1–3; 9.1–4", "Hesíodo, Teogonía 886–900"],
+          caveat: "La reconstrucción matriarcal y la secuencia de cambios cultuales son tesis de Graves, discutidas y no demostradas por el mito."
+        }
+      },
+      aphroditeBirth: {
+        title: "El nacimiento de Afrodita",
+        reference: "Graves · tomo I, mito 11: «El nacimiento de Afrodita»",
+        official: {
+          intro: "Afrodita emerge de la espuma del mar y llega primero a Citera y luego a Chipre. En otra genealogía es hija de Zeus y Dione; ambas versiones conviven en la literatura antigua.",
+          points: ["El relato hesiódico la hace surgir tras la mutilación de Urano; Homero la llama hija de Zeus y Dione.", "Las Horas la reciben y la visten; palomas y gorriones acompañan a la diosa del deseo.", "Citera, Chipre y Pafos son centros asociados a su culto y a distintas tradiciones sobre su llegada."],
+          sources: ["Hesíodo, Teogonía 188–206, 353", "Homero, Ilíada 5.370–430", "Himno homérico a Afrodita 1–34", "Graves I, 11"]
+        },
+        variants: {
+          intro: "Las fuentes no resuelven una sola genealogía: Afrodita puede nacer del mar o descender de Zeus y Dione.",
+          points: ["La versión de Hesíodo deriva su nacimiento de la espuma que rodea los genitales de Urano; la tradición homérica la hace hija de Dione.", "Se discute dónde desembarca primero y qué isla recibe el culto más antiguo; Graves menciona Citera, Chipre y Pafos.", "El nombre y los atributos de la diosa se relacionan en la Antigüedad con más de un santuario y tradición local."],
+          sources: ["Hesíodo, Teogonía 188–206", "Homero, Ilíada 5.370–430", "Apolodoro, Biblioteca 1.1.3", "Graves I, 11.1–3"]
+        },
+        graves: {
+          intro: "Graves compara a Afrodita con diosas del Mediterráneo oriental y destaca el peso de sus cultos insulares.",
+          points: ["Relaciona la versión nacida del mar con una diosa de amplia difusión y con cultos de Siria y Palestina.", "Interpreta la filiación de Dione como una apropiación del antiguo oráculo del roble de Dodona por Zeus.", "Vincula los santuarios de Citera y Chipre con redes comerciales y con la circulación de formas cultuales cretenses."],
+          sources: ["Graves I, 11.1–3", "Hesíodo, Teogonía 188–206"],
+          caveat: "Las conexiones históricas y la genealogía cultual que Graves propone son hipótesis comparativas; no eliminan las diferencias entre testimonios."
+        }
+      },
+      hermes: {
+        title: "Hermes, Apolo y Ártemis: nacimientos y primeros relatos",
+        reference: "Graves · tomo I, mitos 14, 17, 21 y 22",
+        official: {
+          intro: "Hermes nace de Maya en Cilene; Apolo y Ártemis son hijos de Leto. El Himno homérico a Hermes cuenta cómo el recién nacido roba el ganado de Apolo, inventa la lira y termina reconciliándose con él.",
+          points: ["Las tradiciones sitúan el parto de Leto en Delos, tras la persecución de Hera y el viaje de la madre por distintas regiones.", "Hermes oculta el rastro de las reses y ofrece la lira a Apolo; el intercambio funda su vínculo con la música y el mensajero divino.", "Las versiones discrepan sobre los lugares de nacimiento, las rutas y los detalles de las primeras hazañas."],
+          sources: ["Himno homérico a Hermes", "Himno homérico a Apolo 14–18", "Hesíodo, Teogonía 918–920", "Graves I, 14; 17; 21–22"]
+        },
+        variants: {
+          intro: "Graves registra varias ciudades que reclamaban el nacimiento de Apolo y distintos relatos sobre la familia de Dioniso.",
+          points: ["Delos, Ortigia y lugares de Asia Menor aparecen como escenarios del nacimiento de Apolo; las fuentes no coinciden en una única patria.", "El Himno a Hermes desarrolla el robo de las vacas y la lira; otros autores resumen la disputa o alteran su desenlace.", "Graves reúne distintas genealogías de Ártemis y Apolo, y conserva por separado los relatos de Dioniso y Sémele."],
+          sources: ["Himnos homéricos a Apolo y a Hermes", "Apolodoro 1.4.1", "Tucídides 3.104", "Graves I, 14.1–5"]
+        },
+        graves: {
+          intro: "Graves interpreta las genealogías de los dioses como señales posibles de la fusión y competencia entre cultos locales.",
+          points: ["Asocia a Hermes con pilares fálicos y con una función anterior a su incorporación como olímpico.", "Relaciona el ratón oracular y los epítetos de Apolo con santuarios de curación y profecía anteriores a la síntesis olímpica.", "Advierte, a través de los lugares de nacimiento reclamados por distintas ciudades, que no hay una biografía mítica única."],
+          sources: ["Graves I, 14.1–5", "Graves I, 17.1–3", "Graves I, 21.1–14; 22.1–4"],
+          caveat: "Las asociaciones cultuales y la historia religiosa que Graves deduce son propuestas del autor; la variación geográfica también puede reflejar tradiciones cívicas distintas."
+        }
+      },
+      apolloPython: {
+        title: "Apolo, Pitón y el oráculo de Delfos",
+        reference: "Graves · tomo I, mito 21: «Naturaleza y hechos de Apolo»",
+        official: {
+          intro: "Apolo llega a Delfos y mata a Pitón, serpiente vinculada con el oráculo de la Madre Tierra. Tras una purificación, el dios se establece en el santuario y sus profecías se transmiten por la Pitia.",
+          points: ["El Himno homérico a Apolo narra la búsqueda del lugar para el santuario y la derrota de la serpiente.", "Los Juegos Píticos conservan el nombre de Pitón y distintas versiones los presentan como expiación o celebración.", "Graves también recoge episodios de Marsias, Dafne y Jacinto dentro del ciclo de Apolo."],
+          sources: ["Himno homérico a Apolo 300–374", "Apolodoro, Biblioteca 1.4.1", "Pausanias 10.6.5–7", "Graves I, 21"]
+        },
+        variants: {
+          intro: "Los testimonios difieren sobre la serpiente, la purificación de Apolo y la relación previa de Delfos con Gea.",
+          points: ["En algunas versiones Pitón custodia el oráculo y en otras se acentúa su persecución de Leto; también varía su género y nombre.", "El Himno hace de Delfos una fundación de Apolo; Graves reúne relatos en que la Pitia y el santuario ya se asociaban con Gea.", "Los lugares y ritos de purificación cambian: las fuentes mencionan Tempe, Agila o Creta."],
+          sources: ["Himno homérico a Apolo", "Apolodoro 1.4.1", "Plutarco, Cuestiones griegas 12", "Graves I, 21.1–3"]
+        },
+        graves: {
+          intro: "Graves lee la victoria sobre Pitón como una posible toma y reorganización de un oráculo anterior.",
+          points: ["Propone que el santuario perteneció primero a la Madre Tierra y que Apolo incorporó su sacerdotisa y prácticas proféticas.", "Interpreta los Juegos Píticos como una forma de conservar la memoria del poder vencido, no de borrarlo por completo.", "Relaciona el mito con cambios de autoridad religiosa; las fuentes antiguas transmiten la trama, pero no verifican esa secuencia histórica."],
+          sources: ["Graves I, 21.1–3, 21.12–14", "Graves I, 51.1–2", "Himno homérico a Apolo"],
+          caveat: "La supuesta ocupación histórica de un oráculo previo es la interpretación de Graves y no un hecho demostrado por el mito."
+        }
+      },
+      athena: {
+        title: "Atenea y la fundación de Atenas",
+        reference: "Graves · tomo I, mito 25: «Naturaleza y hechos de Atenea»",
+        official: {
+          intro: "Atenea protege la ciudad que lleva su nombre. En el certamen con Posidón, los dioses ofrecen dones a los atenienses: el olivo de Atenea prevalece sobre el agua salada o el caballo de Posidón, según la versión.",
+          points: ["Atenea aparece como diosa de la estrategia, la artesanía y la protección cívica, además de patrona de la Acrópolis.", "El olivo y Erictonio son motivos centrales de las tradiciones atenienses sobre autoctonía y fundación.", "Las fuentes no narran de modo idéntico el concurso, la genealogía de Erictonio ni la relación de la diosa con la ciudad."],
+          sources: ["Apolodoro, Biblioteca 3.14.1", "Pausanias 1.24.3; 1.26.5", "Homero, Ilíada 2.546–551", "Graves I, 25"]
+        },
+        variants: {
+          intro: "Atenea tiene santuarios y genealogías en muchas ciudades; su identidad no se reduce a una sola versión ateniense.",
+          points: ["Apolodoro hace a Atenea hija de Zeus y criada por Tritón; Graves conserva también tradiciones libias y cretenses.", "El olivo compite con el caballo, la fuente salada u otros dones de Posidón; los detalles dependen del autor y del santuario.", "Lechuza, serpiente, égida, tejido y cerámica destacan en distintos relatos e imágenes de la diosa."],
+          sources: ["Apolodoro 3.12.3; 3.14.1", "Pausanias 1.26.5", "Heródoto 4.180", "Graves I, 8; 25.1–4"]
+        },
+        graves: {
+          intro: "Graves contempla a Atenea como una figura compuesta, cuya imagen olímpica conserva posibles huellas de cultos locales anteriores.",
+          points: ["La compara con Neith y con una diosa de aspectos múltiples; propone que la tradición de su virginidad reordenó rasgos más antiguos.", "Interpreta la lechuza, la serpiente y el olivo como marcas de cultos y comunidades específicas, no como símbolos universales.", "Relaciona a Atenea con la organización de la ciudad y con la transformación de los antiguos relatos de nacimiento y soberanía."],
+          sources: ["Graves I, Introducción", "Graves I, 25.1–5; 51.1", "Pausanias 1.26.5"],
+          caveat: "Las conexiones matriarcales y totémicas son hipótesis de Graves; no constituyen consenso sobre el desarrollo del culto de Atenea."
+        }
+      },
+      dionysus: {
+        title: "Dioniso, Sémele y el dios nacido dos veces",
+        reference: "Graves · tomo I, mitos 14 y 27: «Naturaleza y hechos de Dioniso»",
+        official: {
+          intro: "En el relato más difundido, Zeus engendra a Dioniso con la tebana Sémele. Hera la induce a pedir que el dios se manifieste en su forma divina; el rayo mata a Sémele y Zeus completa la gestación del niño en su muslo.",
+          points: ["Dioniso llega a Tebas y su culto choca con la autoridad de Penteo en la tragedia de Eurípides.", "El dios se asocia con la vid, el vino, el teatro, el éxtasis ritual y las ménades.", "Las fuentes conservan genealogías y desenlaces diversos, además de cultos locales con atributos animales distintos."],
+          sources: ["Eurípides, Bacantes", "Himno homérico 7 a Dioniso", "Apolodoro, Biblioteca 3.4.3", "Graves I, 14; 27"]
+        },
+        variants: {
+          intro: "Graves enumera varias madres atribuidas a Dioniso y distintas versiones de su nacimiento y de su culto.",
+          points: ["Además de Sémele, algunas genealogías lo hacen hijo de Deméter, Io, Dione, Perséfone o Lete.", "El dios aparece como niño salvado del rayo, como nacido del muslo de Zeus y, en tradiciones órficas, como Zagreo.", "Serpiente, león, toro, cabra o ciervo aparecen en variantes rituales y narrativas; no todos los cultos los reúnen del mismo modo."],
+          sources: ["Apolodoro 3.4.3", "Diodoro Sículo 3.62–74", "Eurípides, Bacantes", "Graves I, 14.2–3; 27.1–12"]
+        },
+        graves: {
+          intro: "Graves interpreta a Dioniso como figura de cultos vegetales y regios reunidos en una tradición olímpica posterior.",
+          points: ["Lee el nacimiento de Sémele como una narración de cambio de autoridad entre un culto anterior y Zeus olímpico.", "Relaciona las madres alternativas con cereal, roble, luna y muerte; vincula las formas animales del dios con un calendario estacional.", "Su análisis distingue entre el dios de la vid, el rey ritual y los cultos locales que los mitógrafos posteriores integraron."],
+          sources: ["Graves I, 14.2–5", "Graves I, 27.1–12", "Eurípides, Bacantes"],
+          caveat: "La reconstrucción ritual y la historia de cultos que ofrece Graves es una hipótesis comparativa, no la única lectura de Dioniso."
+        }
+      },
+      orpheus: {
+        title: "Orfeo y Eurídice",
+        reference: "Graves · tomo I, mito 28: «Orfeo»",
+        official: {
+          intro: "Orfeo canta y toca la lira con tal poder que conmueve a animales, árboles y piedras. Tras la muerte de Eurídice desciende al inframundo para recuperarla, pero se vuelve antes de salir y la pierde de nuevo.",
+          points: ["Las fuentes antiguas no siempre narran el descenso con los mismos detalles ni atribuyen a Orfeo una sola genealogía.", "Otras tradiciones lo presentan como fundador de ritos y misterios; su muerte a manos de mujeres tracias también varía.", "El episodio de Eurídice es central en la recepción posterior, aunque no agota las historias antiguas sobre Orfeo."],
+          sources: ["Virgilio, Geórgicas 4.453–527", "Ovidio, Metamorfosis 10.1–85; 11.1–66", "Apolodoro, Biblioteca 1.3.2", "Graves I, 28"]
+        },
+        variants: {
+          intro: "Graves separa relatos antiguos sobre el cantor y su muerte de la versión posterior del rescate fallido de Eurídice.",
+          points: ["En el relato de Eurídice, la serpiente y la prohibición de mirar atrás aparecen en versiones tardías y no en todos los testimonios.", "La muerte de Orfeo se atribuye a las mujeres tracias, a las ménades o a un conflicto de culto; su cabeza conserva poderes proféticos en algunas versiones.", "Las tradiciones lo vinculan con Apolo, Dioniso, los misterios órficos y santuarios oraculares de manera desigual."],
+          sources: ["Graves I, 28.1–6", "Virgilio, Geórgicas 4.453–527", "Ovidio, Metamorfosis 10–11", "Pausanias 9.30.3"]
+        },
+        graves: {
+          intro: "Graves interpreta el ciclo de Orfeo a partir de árboles rituales, profecía y la coexistencia de cultos.",
+          points: ["Distingue al Orfeo vinculado a una tradición oracular de la narración posterior de Eurídice y su descenso.", "Relaciona al cantor con ritos de inspiración, árboles sagrados y la presencia de Dioniso en el inframundo.", "Propone que algunos episodios nacieron de una lectura de imágenes rituales; el propio Graves presenta esas reconstrucciones como inferencias."],
+          sources: ["Graves I, 28.1–6", "Pausanias 10.30.3", "Virgilio, Geórgicas 4.453–527"],
+          caveat: "Las explicaciones iconográficas y rituales son hipótesis de Graves; la evidencia textual no permite reconstruir una sola forma original del mito."
+        }
+      },
+      deucalion: {
+        title: "Deucalión y el diluvio",
+        reference: "Graves · tomo I, mito 38: «El diluvio de Deucalión»",
+        official: {
+          intro: "Zeus envía un diluvio para destruir a la humanidad. Deucalión y Pirra se salvan en un arca o cofre, llegan al Parnaso y, siguiendo un oráculo, arrojan piedras que se convierten en hombres y mujeres.",
+          points: ["Las fuentes difieren sobre la causa del diluvio, su duración y el lugar donde desembarca la pareja.", "El mito explica la renovación de la humanidad mediante las piedras, interpretadas como los huesos de Gea.", "Deucalión aparece en genealogías que conectan a los griegos con héroes y ciudades posteriores."],
+          sources: ["Apolodoro, Biblioteca 1.7.2", "Ovidio, Metamorfosis 1.253–415", "Pausanias 1.18.7", "Graves I, 38"]
+        },
+        variants: {
+          intro: "Las versiones griegas del diluvio no forman un relato uniforme y se cruzan con otras tradiciones de inundación.",
+          points: ["Apolodoro destaca a Deucalión y Pirra; Ovidio amplía la destrucción y la restauración de los seres vivos.", "El Parnaso, el Otris y otros montes aparecen asociados al refugio de los supervivientes en diferentes relatos.", "Las piedras pueden ser entendidas como huesos de la Tierra; cambian la interpretación del oráculo y el modo de repoblar el mundo."],
+          sources: ["Apolodoro 1.7.2", "Ovidio, Metamorfosis 1.253–415", "Hesíodo, Trabajos y días 157–173", "Graves I, 38.1–4"]
+        },
+        graves: {
+          intro: "Graves compara el diluvio con relatos regionales y lee el mito como una explicación de supervivencia y renovación.",
+          points: ["Recoge variantes locales sobre la pareja, el refugio y la repoblación, en lugar de tratarlas como una cronología histórica única.", "Relaciona las piedras con la Tierra y con las genealogías de los pueblos griegos.", "El paralelo con inundaciones de otras culturas ayuda a comparar motivos, pero no demuestra una fuente común ni un diluvio histórico concreto."],
+          sources: ["Graves I, 38.1–4", "Apolodoro 1.7.2", "Ovidio, Metamorfosis 1"],
+          caveat: "La comparación mitográfica de Graves no convierte el relato en evidencia directa de un acontecimiento geológico o histórico."
+        }
+      },
+      prometheus: {
+        title: "Prometeo, el fuego y Pandora",
+        reference: "Graves · tomo I, mito 39: «Atlante y Prometeo»",
+        official: {
+          intro: "Prometeo engaña a Zeus en el reparto de un sacrificio y roba el fuego para los humanos. Zeus lo encadena; como castigo adicional envía a Pandora, cuyo recipiente libera males entre los mortales.",
+          points: ["El reparto de Mekone explica por qué los humanos ofrecen a los dioses huesos y grasa mientras conservan la carne.", "Hesíodo cuenta la creación de Pandora y la dispersión de los males; otras obras desarrollan el robo del fuego y la liberación de Prometeo.", "El nombre del recipiente, la identidad de Pandora y el alcance de los castigos varían en la transmisión."],
+          sources: ["Hesíodo, Teogonía 507–616", "Hesíodo, Trabajos y días 47–105", "Esquilo, Prometeo encadenado", "Graves I, 39"]
+        },
+        variants: {
+          intro: "Las fuentes no ofrecen una única biografía de Prometeo; difieren en su relación con la creación humana, el fuego y Pandora.",
+          points: ["En ciertas tradiciones Prometeo modela a los seres humanos; otras lo destacan como benefactor que roba el fuego.", "El castigo del águila y la roca del Cáucaso se transmite junto con versiones donde Heracles lo libera.", "Hesíodo presenta a Pandora como origen de males; en otras lecturas antiguas «pithos» es un gran recipiente, no una caja pequeña."],
+          sources: ["Hesíodo, Teogonía 507–616", "Hesíodo, Trabajos y días 47–105", "Apolodoro 1.7.1", "Graves I, 39.1–12"]
+        },
+        graves: {
+          intro: "Graves distingue al héroe del fuego de las elaboraciones morales que atribuye a la tradición hesiódica.",
+          points: ["Compara a Prometeo con figuras de otras culturas y propone una posible relación de su nombre con el taladro de fuego pramantha.", "Considera el relato de Pandora una fábula antifeminista añadida a un mito anterior, e interpreta el sacrificio como explicación posterior de un rito.", "Estas lecturas son juicios de Graves sobre la formación de los relatos, no una conclusión aceptada por todos los especialistas."],
+          sources: ["Graves I, 39.1–12", "Hesíodo, Teogonía 535–616", "Hesíodo, Trabajos y días 54–105"],
+          caveat: "La separación entre mito «auténtico» y fábula posterior es una tesis de Graves; no puede establecerse solo por el contraste entre esos textos."
+        }
+      },
+      asclepius: {
+        title: "Asclepio y el poder de curar",
+        reference: "Graves · tomo I, mito 50: «Asclepio»",
+        official: {
+          intro: "Apolo rescata a Asclepio del cuerpo de su madre Coronis y lo entrega al centauro Quirón, quien lo instruye en medicina. Su capacidad de devolver la vida provoca la intervención de Zeus.",
+          points: ["Las versiones sitúan el nacimiento en Epidauro, Tesalia o Arcadia, y discrepan sobre cómo se salva el niño.", "Asclepio cura a numerosos héroes y llega a resucitar muertos; Zeus lo fulmina para preservar el orden entre vivos y muertos.", "Su culto se asocia con santuarios de incubación, ofrendas y serpientes, además de su familia médica."],
+          sources: ["Píndaro, Pítica 3.5–58", "Apolodoro, Biblioteca 3.10.3–4", "Higino, Fábula 49", "Graves I, 50"]
+        },
+        variants: {
+          intro: "Epidauro, Trica, Telpusa y otras ciudades reclamaron vínculos con el nacimiento o el culto del dios médico.",
+          points: ["En una versión Apolo extrae al niño de la pira de Coronis; en la tradición epidauria, Coronis da a luz en el santuario y lo abandona.", "Las fuentes discrepan sobre cuáles muertos resucita y si Zeus lo mata una o más veces antes de su divinización.", "Las imágenes locales lo representan con serpiente, cetro, piña u otros atributos; el culto tuvo más de una forma regional."],
+          sources: ["Apolodoro 3.10.3–4", "Pausanias 2.26.4; 3.14.7", "Píndaro, Pítica 3", "Graves I, 50.1–3"]
+        },
+        graves: {
+          intro: "Graves propone que Asclepio reúne antiguas tradiciones de héroes médicos y santuarios oraculares.",
+          points: ["Interpreta el ciclo como una disputa entre cultos de curación locales y la autoridad de Apolo.", "Relaciona a los héroes médicos con serpientes y aves oraculares y trata «Asclepio» como un título honorífico posible.", "Subraya que los relatos de resurrección, filiación y lugar de nacimiento se superponen, en vez de componer una biografía coherente."],
+          sources: ["Graves I, 50.1–3", "Apolodoro 3.10.3–4", "Pausanias 2.26.4"],
+          caveat: "La sustitución de un supuesto culto médico prehelénico es una hipótesis de Graves; las variantes locales no prueban por sí solas esa secuencia."
+        }
+      },
+      io: {
+        title: "Ío, la vaca sagrada y el viaje a Egipto",
+        reference: "Graves · tomo I, mito 56: «Io»",
+        official: {
+          intro: "Ío, sacerdotisa de Hera, atrae el deseo de Zeus y es transformada en vaca. Hera la entrega al guardián Argos; tras su liberación, un tábano la hace vagar hasta Egipto, donde recupera forma humana.",
+          points: ["Hermes mata a Argos y Hera coloca sus ojos en la cola del pavo real.", "En Egipto Ío da a luz a Épafo, antepasado de genealogías que enlazan Grecia, Libia y Egipto.", "Los relatos discrepan sobre el itinerario, la transformación y la identificación de Ío con otras diosas."],
+          sources: ["Esquilo, Suplicantes 291–315; 539–599", "Heródoto 1.1; 2.41", "Apolodoro, Biblioteca 2.1.3", "Graves I, 56"]
+        },
+        variants: {
+          intro: "Graves reúne versiones de Argos, Eubea, Siria y Egipto, y conserva más de una explicación del viaje de Ío.",
+          points: ["En algunas versiones Ío nace en una cueva de Eubea o muere allí; en otras llega a Egipto y funda un culto.", "Las fuentes presentan a Ío como hija de Ínaco o de otras figuras, y difieren sobre el vínculo de Zeus con la transformación bovina.", "El relato puede incluir a Prometeo, el Bósforo y el río Nilo, pero las rutas y los topónimos no coinciden."],
+          sources: ["Esquilo, Prometeo encadenado 705–741; Suplicantes", "Apolodoro 2.1.3", "Ovidio, Metamorfosis 1.568–750", "Graves I, 56.1–4"]
+        },
+        graves: {
+          intro: "Graves interpreta a Ío como figura lunar-bovina y como relato de circulación de ritos entre regiones.",
+          points: ["Relaciona los cambios de color de la vaca con fases de la Luna y con una tríada de edades divinas.", "Lee la persecución del tábano como posible trasfondo de una danza ritual de lluvia y fertilidad.", "Conecta el viaje con cultos de Grecia, Siria y Egipto; esas equivalencias forman parte de su método comparativo."],
+          sources: ["Graves I, 56.1–4", "Heródoto 2.41", "Esquilo, Suplicantes"],
+          caveat: "La identificación de Ío con una diosa lunar y la reconstrucción de un rito común son propuestas de Graves, no datos confirmados por las fuentes."
+        }
+      },
+      europaCadmus: {
+        title: "Europa, Cadmo y los hombres sembrados",
+        reference: "Graves · tomo I, mitos 58–59: «Europa y Cadmo»; «Cadmo y Harmonía»",
+        official: {
+          intro: "Zeus, convertido en toro, lleva a Europa desde Fenicia hasta Creta. Sus hermanos parten en su busca; Cadmo llega a Beocia, mata una serpiente y siembra sus dientes, de los que brotan guerreros armados.",
+          points: ["Europa es madre de Minos, Radamantis y Sarpedón en una tradición; sus genealogías varían.", "Cadmo funda Tebas y se une a Harmonía; los cinco supervivientes de los Espartos se convierten en sus aliados.", "Las versiones difieren sobre la ruta de los hermanos, el lugar del rapto y la identidad de la serpiente."],
+          sources: ["Apolodoro, Biblioteca 3.1.1–4.2", "Heródoto 1.2", "Ovidio, Metamorfosis 2.833–875", "Graves I, 58–59"]
+        },
+        variants: {
+          intro: "Graves recoge genealogías alternativas para los hijos de Agenor y distintas versiones de la llegada de Cadmo a Grecia.",
+          points: ["Europa aparece como hija de Agenor o Fénix; en algunas versiones Zeus la rapta en forma de toro y en otras se cuenta una incursión humana.", "Cadmo consulta a Apolo, sigue una vaca hasta el sitio de Tebas y recibe instrucciones distintas sobre el sacrificio y la siembra de dientes.", "Los nombres y el número de los Espartos varían; Graves subraya que no todos los relatos los vinculan del mismo modo con la fundación tebana."],
+          sources: ["Apolodoro 3.1.1–4.2", "Diodoro Sículo 4.2", "Heródoto 1.2", "Graves I, 58.1–6"]
+        },
+        graves: {
+          intro: "Graves enlaza los relatos con movimientos de población, autoridad local y símbolos lunares y serpentinos.",
+          points: ["Interpreta la búsqueda de Europa y su viaje como memoria posible de contactos y conflictos entre Creta, Fenicia y Grecia.", "Lee los hombres sembrados como héroes oraculares y el episodio de Cadmo como una reordenación del poder en Beocia.", "Relaciona el toro, la vaca fundadora y la serpiente con cultos que, según su hipótesis, fueron incorporados a nuevas genealogías."],
+          sources: ["Graves I, 58.1–6", "Graves I, 59", "Heródoto 1.2", "Apolodoro 3.1.1–4.2"],
+          caveat: "Las migraciones y cambios de culto propuestos por Graves no son hechos que puedan deducirse directamente de la narración mítica."
+        }
+      },
+      perseus: {
+        title: "Perseo, Medusa y Andrómeda",
+        reference: "Graves · tomo I, mito 73: «Perseo»",
+        official: {
+          intro: "Perseo recibe la misión de traer la cabeza de Medusa. Con ayuda de Atenea y Hermes obtiene sandalias aladas, un zurrón y el yelmo de Hades; evita mirar a la Gorgona directamente y la decapita.",
+          points: ["De la sangre de Medusa nacen Pegaso y Crisaor; Perseo emplea la cabeza para rescatar a Andrómeda y vencer a sus enemigos.", "Atenea fija la cabeza en su égida y Perseo regresa a Sérifos antes de cumplir sin querer el oráculo sobre Acrisio.", "Las fuentes discrepan sobre la ruta, el número de Gorgonas y los detalles del rescate de Andrómeda."],
+          sources: ["Hesíodo, Teogonía 270–286", "Apolodoro, Biblioteca 2.4.1–4", "Píndaro, Pítica 10.31–48", "Graves I, 73"]
+        },
+        variants: {
+          intro: "La aventura se transforma al pasar de la genealogía argiva a la iconografía de la Gorgona y el rescate de Andrómeda.",
+          points: ["Perseo puede matar a Medusa con una hoz o una espada y recibe ayuda de Atenea, Hermes o las ninfas; los objetos mágicos varían.", "Andrómeda se vincula con Etiopía, Yope o Filistia en la geografía antigua; también cambian el monstruo y el papel de sus padres.", "Las fuentes difieren sobre cómo Perseo usa la cabeza después de la decapitación y sobre su destino final."],
+          sources: ["Apolodoro 2.4.1–4", "Ovidio, Metamorfosis 4.604–5.249", "Higino, Fábulas 63–64", "Graves I, 73.1–9"]
+        },
+        graves: {
+          intro: "Graves interpreta la Gorgona como una imagen ritual con un poder que precede a la aventura heroica de Perseo.",
+          points: ["Relaciona la máscara de Medusa con un emblema protector de una diosa lunar y con sacerdotisas de cultos antiguos.", "Lee la decapitación como posible recuerdo de una toma de santuarios; compara versiones del mito y sus imágenes.", "La cabeza apotropaica y su incorporación a la égida son motivos antiguos, pero la historia de conquista es una reconstrucción de Graves."],
+          sources: ["Graves I, 33.3; 73.5–9", "Hesíodo, Teogonía 270–286", "Apolodoro 2.4.1–4"],
+          caveat: "La lectura de la Gorgona como diosa y la supuesta memoria de una conquista cultual son tesis comparativas de Graves."
+        }
+      },
+      bellerophon: {
+        title: "Belerofonte, Pegaso y la Quimera",
+        reference: "Graves · tomo I, mito 75: «Belerofonte»",
+        official: {
+          intro: "Belerofonte doma a Pegaso con ayuda de Atenea y derrota a la Quimera, monstruo que combina rasgos de león, cabra y serpiente. Después supera otras pruebas en Licia y acaba cayendo de su montura al intentar llegar al Olimpo.",
+          points: ["La historia incluye la acusación de Antea, la carta de Preto y las tareas impuestas por Yóbates.", "Las fuentes difieren sobre quién entrega a Pegaso, qué hazañas realiza Belerofonte y cómo termina su vida.", "La Ilíada ya conoce su encuentro con la Quimera y sus aventuras en Licia, aunque no todos los detalles posteriores."],
+          sources: ["Homero, Ilíada 6.155–205", "Apolodoro, Biblioteca 2.3.1–2", "Píndaro, Olímpica 13.63–92", "Graves I, 75"]
+        },
+        variants: {
+          intro: "El ciclo combina relatos de hospitalidad, pruebas heroicas, genealogías y cultos locales de Licia y Corinto.",
+          points: ["La Quimera es hija de Equidna en algunas genealogías; otros relatos la conectan con un enemigo humano o con una montaña volcánica.", "Pegaso surge de Medusa en el ciclo de Perseo, pero su relación con Posidón y Belerofonte cambia entre autores.", "El desenlace de Belerofonte puede ser una caída, una vida errante o una muerte heroica; la Ilíada no narra la caída del Olimpo."],
+          sources: ["Homero, Ilíada 6.155–205", "Hesíodo, Teogonía 319–325", "Apolodoro 2.3.1–2", "Graves I, 75.1–6"]
+        },
+        graves: {
+          intro: "Graves lee la Quimera y Pegaso como figuras posibles de calendario y soberanía ritual, y mantiene el carácter conjetural de esa lectura.",
+          points: ["Relaciona las tres partes de la Quimera con estaciones del año y con escenas rituales de combate por la realeza.", "Interpreta la doma de Pegaso como una prueba de un aspirante regio y la humillación de Belerofonte como defensa del orden olímpico.", "También reconoce que el origen de la historia es inseguro y ofrece más de una explicación para los episodios licios."],
+          sources: ["Graves I, 75.1–6", "Homero, Ilíada 6.155–205", "Píndaro, Olímpica 13"],
+          caveat: "Las equivalencias estacionales y los ritos regios que Graves propone no son lecturas demostradas de la iconografía."
+        }
+      },
+      daedalus: {
+        title: "Dédalo, Ícaro y Talos",
+        reference: "Graves · tomo I, mito 92: «Dédalo y Talos»",
+        official: {
+          intro: "Dédalo, inventor ateniense que trabaja en Creta, construye alas para escapar del Laberinto con Ícaro. El joven vuela demasiado cerca del sol, cae al mar y muere; otras tradiciones cuentan la muerte de Talos, sobrino y aprendiz de Dédalo.",
+          points: ["Los relatos atribuyen a Dédalo la construcción del Laberinto para Minos y la ayuda a Pasífae en la historia del toro.", "Ícaro muere al fundirse la cera en una versión; en otras, se ahoga tras una huida en barco.", "Talos inventa herramientas, pero Dédalo lo empuja desde la Acrópolis; el nombre también se aplica al guardián de bronce de Creta."],
+          sources: ["Apolodoro, Biblioteca 3.15.8–9; Epítome 1.12–15", "Diodoro Sículo 4.76–79", "Ovidio, Metamorfosis 8.183–259", "Graves I, 92"]
+        },
+        variants: {
+          intro: "Graves reúne episodios que algunos mitógrafos asignan a Ícaro y otros a Talos, además de versiones náuticas de la huida.",
+          points: ["Dédalo escapa con alas, velas o un barco proporcionado por Pasífae; Ícaro puede ahogarse sin que el sol derrita cera alguna.", "Talos recibe los nombres de Calo, Circino o Tántalo; se le atribuyen una sierra, un compás y una muerte por caída o flecha.", "El guardián de bronce de Minos, también llamado Talos, tiene una sola vena y puede morir cuando Medea retira el tapón del tobillo."],
+          sources: ["Apolodoro, Epítome 1.12–15", "Diodoro Sículo 4.76–79", "Pausanias 1.21.6", "Graves I, 92.1–13"]
+        },
+        graves: {
+          intro: "Graves examina cómo mitógrafos distintos fusionaron a Dédalo, el artesano, con Talos, Ícaro y el guardián de bronce.",
+          points: ["Relaciona el vuelo con ritos de sustitución y con la posible confusión entre alas y navegación; lo plantea como interpretación, no como dato del relato.", "Vincula la vena de Talos con técnicas de fundición a la cera perdida y destaca la tradición metalúrgica cretense.", "Interpreta el Laberinto también como trazado ritual de danza, además de palacio o prisión."],
+          sources: ["Graves I, 92.1–13", "Apolodoro, Epítome 1.12–15", "Diodoro Sículo 4.76–79"],
+          caveat: "Las reconstrucciones tecnológicas y rituales de Graves son hipótesis; las fuentes antiguas conservan relatos incompatibles."
+        }
+      },
+      oedipus: {
+        title: "Edipo y la Esfinge",
+        reference: "Graves · tomo II, mito 105: «Edipo»",
+        official: {
+          intro: "Un oráculo predice que Edipo matará a su padre y se casará con su madre. Criado sin conocer su origen, mata a Layo en un cruce de caminos, resuelve el enigma de la Esfinge y se convierte en rey de Tebas al casarse con Yocasta.",
+          points: ["La peste y la investigación de la muerte de Layo revelan la identidad de Edipo; Yocasta muere y Edipo se ciega o es desterrado, según la versión.", "La Esfinge propone un enigma y devora a quienes no lo resuelven; el acertijo más conocido pregunta por el ser de cuatro, dos y tres pies.", "Los destinos de Edipo y sus hijos se cuentan de manera distinta en la tragedia, la épica y los mitógrafos."],
+          sources: ["Sófocles, Edipo rey; Edipo en Colono", "Apolodoro, Biblioteca 3.5.7–9", "Hesíodo, Teogonía 326", "Graves II, 105"]
+        },
+        variants: {
+          intro: "Graves conserva alternativas sobre el abandono de Edipo, la muerte de Layo, la Esfinge y el final del rey.",
+          points: ["Edipo es expuesto en el Citerón o encerrado en un arca arrojada al mar; las ciudades que lo crían también cambian.", "La Esfinge puede ser hija de Tifón y Equidna o tener otra genealogía; varía el número y la formulación de sus enigmas.", "Edipo continúa reinando, muere en batalla o es expulsado y llega a Colono acompañado por Antígona."],
+          sources: ["Apolodoro 3.5.7–9", "Higino, Fábula 66", "Sófocles, Edipo rey; Edipo en Colono", "Graves II, 105.a–k"]
+        },
+        graves: {
+          intro: "Graves trata la historia como una composición de episodios que pudieron nacer de imágenes rituales y relatos sucesorios.",
+          points: ["Propone que la saga de Layo, Yocasta y Edipo reorganiza el sentido de antiguos iconos y ceremonias.", "Relaciona la Esfinge con un emblema anterior de Tebas y lee el conflicto como sucesión de autoridad, no solo como destino familiar.", "Distingue la hipótesis sobre el origen de las imágenes del relato que conservan Sófocles y los mitógrafos."],
+          sources: ["Graves II, 105.1–4", "Sófocles, Edipo rey", "Apolodoro 3.5.7–9"],
+          caveat: "La lectura de Edipo como transformación de un ritual sucesorio es la hipótesis de Graves y no el sentido único aceptado del mito."
+        }
+      },
+      sevenThebes: {
+        title: "Los siete contra Tebas",
+        reference: "Graves · tomo II, mitos 106–107: «Los siete contra Tebas» y «Los Epígonos»",
+        official: {
+          intro: "Eteocles y Polinices disputan el trono tebano. Polinices reúne una expedición argiva de siete jefes; la guerra termina con la muerte de los dos hermanos y, en otra generación, con la toma de Tebas por los Epígonos.",
+          points: ["Los siete jefes ocupan puertas distintas y los relatos relacionan cada combate con presagios y juramentos.", "Antígona desafía la orden de Creonte y entierra a Polinices, episodio que Sófocles convierte en tragedia cívica.", "El número de atacantes, los supervivientes y el desenlace varían entre la epopeya perdida, el drama y los mitógrafos."],
+          sources: ["Esquilo, Siete contra Tebas", "Eurípides, Fenicias; Suplicantes", "Apolodoro, Biblioteca 3.6.1–8; 3.7.1", "Graves II, 106–107"]
+        },
+        variants: {
+          intro: "Graves yuxtapone la guerra de los hermanos, el sacrificio de Meneceo, la historia de Antígona y la campaña posterior de sus hijos.",
+          points: ["Eteocles y Polinices alternan o disputan el reinado según la versión; la causa inmediata puede ser el reparto del poder o una ofensa familiar.", "La muerte de Meneceo, la caída de Capaneo y el destino de Anfiarao se cuentan con diferencias entre autores.", "Los Epígonos vencen en la segunda campaña; cambian el mando, las alianzas y la ruta de la huida tebana."],
+          sources: ["Esquilo, Siete contra Tebas", "Apolodoro 3.6.1–8; 3.7.1–2", "Pausanias 9.9.2", "Graves II, 106.1–5; 107"]
+        },
+        graves: {
+          intro: "Graves relaciona el ciclo con la sucesión dinástica, los emblemas de los reinos y la memoria ritual de la guerra.",
+          points: ["Interpreta la disputa entre los hermanos como un conflicto por símbolos de soberanía y por la sucesión en Tebas.", "Compara los escudos animales con emblemas cívicos y lee algunos sacrificios y funerales dentro de su teoría de realeza sagrada.", "También señala paralelos narrativos entre las guerras de Tebas y Troya, sin reducir ambas epopeyas a un solo hecho histórico."],
+          sources: ["Graves II, 106.1–6; 107.1–3", "Hesíodo, Trabajos y días 161–173", "Esquilo, Siete contra Tebas"],
+          caveat: "Las conexiones rituales y la reconstrucción de la sucesión que Graves propone son conjeturas, no hechos probados por el ciclo épico."
+        }
+      },
+      atreusThyestes: {
+        title: "Atreo y Tiestes: el cordero de oro",
+        reference: "Graves · tomo II, mitos 108–111: Tántalo, Pélope, sus hijos y «Atreo y Tiestes»",
+        official: {
+          intro: "Atreo y Tiestes, hijos de Pélope, disputan el trono de Micenas. Un cordero de vellón dorado, la traición de Tiestes y la represalia de Atreo desencadenan una cadena de violencia familiar.",
+          points: ["Las versiones relacionan la disputa con el adulterio de Aérope y con la legitimidad de la sucesión.", "Atreo sirve a Tiestes la carne de sus propios hijos; el sol invierte su curso en una tradición del relato.", "La enemistad heredada continúa con Egisto y prepara el ciclo de Agamenón y Orestes."],
+          sources: ["Apolodoro, Epítome 2.10–15", "Higino, Fábula 88", "Esquilo, Agamenón 1583–1602", "Graves II, 108–111"]
+        },
+        variants: {
+          intro: "Las fuentes difieren sobre el origen del vellocino, el exilio de Tiestes, el papel de Aérope y la profecía del sol.",
+          points: ["En algunas versiones el cordero es la señal para obtener el trono; en otras se integra al mito más amplio de Pélope y sus descendientes.", "Atreo expone o mata a los hijos de Tiestes de maneras distintas; el banquete caníbal se desarrolla sobre todo en relatos posteriores.", "La genealogía de Egisto y su papel en la reconciliación o venganza familiar no es idéntica en tragedia y mitografía."],
+          sources: ["Apolodoro, Epítome 2.10–15", "Higino, Fábula 88", "Esquilo, Agamenón", "Graves II, 108–111"]
+        },
+        graves: {
+          intro: "Graves interpreta el vellocino como insignia de soberanía y sitúa la saga en un patrón de sucesión y sacrificio regio.",
+          points: ["Relaciona la disputa por el vellón con otros símbolos de legitimidad dinástica y con el reparto del poder entre hermanos.", "Lee el banquete de Atreo como una inversión violenta del rito sacrificial y conecta la rivalidad con antiguos ciclos de realeza.", "Su lectura enlaza episodios de varios mitos; no debe confundirse con una reconstrucción comprobada de la historia micénica."],
+          sources: ["Graves II, 108.1; 109–111", "Apolodoro, Epítome 2.10–15", "Esquilo, Agamenón"],
+          caveat: "La relación con sacrificios regios y emblemas históricos es una tesis comparativa de Graves, no un consenso arqueológico."
+        }
+      },
+      oresteia: {
+        title: "Agamenón, Clitemnestra y el juicio de Orestes",
+        reference: "Graves · tomo II, mitos 112–115: Agamenón, Orestes y las Erinias",
+        official: {
+          intro: "A su regreso de Troya, Agamenón es asesinado por Clitemnestra y Egisto. Orestes venga a su padre matando a ambos; perseguido por las Erinias, llega a Atenas, donde un tribunal decide su destino.",
+          points: ["El sacrificio de Ifigenia y la profecía de Casandra explican distintas motivaciones del asesinato de Agamenón.", "Electra ayuda a Orestes en varias versiones; el matricidio provoca el conflicto entre las Erinias y Apolo.", "Atenea instituye el tribunal del Areópago y las Erinias reciben un nuevo lugar como Euménides en la Orestíada."],
+          sources: ["Esquilo, Orestíada", "Sófocles, Electra", "Eurípides, Electra; Orestes", "Graves II, 112–115"]
+        },
+        variants: {
+          intro: "Los poetas y mitógrafos discrepan sobre la muerte de Ifigenia, la colaboración de Clitemnestra y el castigo de Orestes.",
+          points: ["Ifigenia puede morir en Áulide o ser sustituida por una cierva y llevada a Táuride; el episodio cambia entre tragedias.", "En unas versiones Orestes actúa con Electra y en otras con Pílades; el juicio puede ocurrir en Atenas o en otros escenarios.", "Las Erinias no desaparecen en todas las versiones: pueden convertirse en protectoras del orden cívico o continuar persiguiendo a Orestes."],
+          sources: ["Esquilo, Orestíada", "Eurípides, Ifigenia en Táuride; Orestes", "Apolodoro, Epítome 6.23–28", "Graves II, 112–116"]
+        },
+        graves: {
+          intro: "Graves lee la absolución de Orestes como un cambio de jurisdicción religiosa entre la venganza materna y la justicia cívica.",
+          points: ["Interpreta a las Erinias como poderes antiguos que protegen a la madre y al suplicante, frente a la nueva autoridad de Zeus y Apolo.", "Ve en el juicio de Atenea la conciliación política de cultos en conflicto, más que la simple victoria de una parte.", "La Orestíada representa ese cambio en escena; la reconstrucción del proceso histórico pertenece al comentario comparativo de Graves."],
+          sources: ["Graves II, 112–115", "Esquilo, Euménides", "Apolodoro, Epítome 6.24–28"],
+          caveat: "El paso de un sistema matrilineal a uno patriarcal es la interpretación de Graves y no una descripción histórica demostrada por la tragedia."
+        }
+      },
+      argonauts: {
+        title: "Jasón y los Argonautas",
+        reference: "Graves · tomo II, mitos 148–155: viaje del Argo y búsqueda del vellocino",
+        official: {
+          intro: "Jasón reúne héroes para navegar en el Argo hasta la Cólquide y recuperar el vellocino de oro. Con ayuda de Medea supera las pruebas de Eetes y huye con el botín, mientras la expedición enlaza aventuras y pérdidas.",
+          points: ["La tripulación incluye héroes de distintos ciclos, entre ellos Heracles, Orfeo y los Dioscuros, aunque las listas varían.", "El viaje incluye las Simplégades, la prueba de los toros y la siembra de dientes del dragón.", "Las fuentes discrepan sobre el itinerario, la composición de la tripulación y el regreso del Argo."],
+          sources: ["Apolonio de Rodas, Argonáuticas", "Píndaro, Pítica 4", "Apolodoro, Biblioteca 1.9.16–28", "Graves II, 148–155"]
+        },
+        variants: {
+          intro: "Graves compara versiones épicas, locales y geográficas de un viaje que cambia de ruta y de propósito.",
+          points: ["Las fuentes no coinciden sobre el destino, el itinerario de regreso ni la localización de Cólquide y Ea.", "Heracles acompaña al Argo en algunas listas y abandona la expedición en otras; también cambian las escalas y los héroes muertos.", "El vellocino puede ser un objeto ritual, una piel fabulosa o el centro de un relato de trabajos nupciales, según el testimonio."],
+          sources: ["Apolonio de Rodas, Argonáuticas 1–4", "Píndaro, Pítica 4", "Apolodoro 1.9.16–28", "Graves II, 148.1–10; 151–155"]
+        },
+        graves: {
+          intro: "Graves trata el ciclo como una acumulación de viajes, trabajos heroicos y tradiciones locales de navegación.",
+          points: ["Compara las rutas occidentales y orientales transmitidas por los autores y distingue la leyenda minia de las reelaboraciones posteriores.", "Relaciona algunos trabajos de Jasón con patrones de pruebas nupciales y con motivos compartidos con otras culturas.", "Reconoce que la geografía mítica no permite identificar sin más una expedición histórica concreta."],
+          sources: ["Graves II, 148.1–10; 151–155", "Apolonio de Rodas, Argonáuticas", "Píndaro, Pítica 4"],
+          caveat: "Las rutas históricas y las equivalencias rituales que Graves propone son conjeturas; el viaje no es una crónica verificable."
+        }
+      },
+      medea: {
+        title: "Medea: Cólquide, Corinto y el exilio",
+        reference: "Graves · tomo II, mitos 152–157: Medea y el ciclo de Jasón",
+        official: {
+          intro: "Medea ayuda a Jasón a conquistar el vellocino y huye con él. En Corinto, cuando Jasón la abandona para casarse con Glauce, Medea responde con una venganza cuyo desenlace varía entre las fuentes.",
+          points: ["En la tragedia de Eurípides, Medea mata a Glauce y a sus propios hijos antes de escapar en el carro de Helios.", "Las versiones de la muerte de Apsirto y de la huida de Cólquide difieren en sus detalles y en la responsabilidad de Medea.", "Medea aparece como princesa, hechicera, sacerdotisa o figura asociada a cultos y genealogías locales."],
+          sources: ["Eurípides, Medea", "Apolonio de Rodas, Argonáuticas 3–4", "Apolodoro, Biblioteca 1.9.23–28", "Graves II, 152–157"]
+        },
+        variants: {
+          intro: "Los autores antiguos no concuerdan sobre quién mata a los hijos de Medea ni sobre la muerte de Glauce.",
+          points: ["Eurípides atribuye a Medea el asesinato de sus hijos; otras tradiciones dicen que los mataron los corintios o que la madre intentó salvarlos.", "Glauce muere por un vestido envenenado en una versión; otros relatos alteran el mecanismo o el lugar del episodio.", "Medea puede exiliarse en Atenas y casarse con Egeo, regresar a Cólquide o desaparecer en una tradición de inmortalización."],
+          sources: ["Eurípides, Medea", "Pausanias 2.3.10", "Apolodoro, Epítome 1.9.28", "Graves II, 156–157"]
+        },
+        graves: {
+          intro: "Graves contrasta el personaje de la tragedia con las tradiciones rituales y dinásticas que rodean a Medea.",
+          points: ["Señala que la autoría de la muerte de los hijos fue discutida ya en la Antigüedad y examina posibles explicaciones locales del relato.", "Relaciona algunas imágenes de la muerte de Glauce con ritos de sacrificio, como hipótesis sobre la formación de la leyenda.", "La hechicera trágica es una de varias figuras que el ciclo reúne; Graves no la presenta como una biografía estable."],
+          sources: ["Graves II, 152.1–5; 156–157.1–4", "Eurípides, Medea", "Pausanias 2.3.10"],
+          caveat: "La explicación ritual de Graves es especulativa; las tragedias y testimonios locales conservan versiones distintas."
+        }
+      },
+      achilles: {
+        title: "Aquiles, Patroclo y la caída de Troya",
+        reference: "Graves · tomo II, mitos 163–166: cólera, muerte de Aquiles y oráculos de Troya",
+        official: {
+          intro: "La cólera de Aquiles nace de su disputa con Agamenón. Tras la muerte de Patroclo, vuelve al combate y mata a Héctor; más tarde muere en la guerra, aunque la Ilíada conservada termina antes de narrar su muerte.",
+          points: ["La embajada, el duelo por Patroclo y la devolución del cuerpo de Héctor organizan el relato de la Ilíada.", "La tradición posterior atribuye la muerte de Aquiles a Paris, a Apolo o a ambos, y ubica el disparo en distintos lugares del cuerpo.", "Las fuentes épicas discrepan sobre el funeral, las armas y el destino de los restos del héroe."],
+          sources: ["Homero, Ilíada 1; 18–24", "Apolodoro, Epítome 5.3–6", "Quinto de Esmirna, Posthoméricas 3", "Graves II, 163–166"]
+        },
+        variants: {
+          intro: "La muerte de Aquiles pertenece a tradiciones posteriores a la escena final de la Ilíada y cambia en cada ciclo épico.",
+          points: ["Paris puede atacar con ayuda de Apolo y herir a Aquiles en el talón; la Ilíada no contiene el motivo del talón vulnerable.", "Patroclo es amigo y compañero de Aquiles en Homero; las narraciones posteriores amplían o reformulan su vínculo.", "El destino de Briseida, las armas y la disputa con Áyax se cuenta de formas distintas entre los poemas del ciclo troyano."],
+          sources: ["Homero, Ilíada 16; 22–24", "Apolodoro, Epítome 5.3–6", "Graves II, 163–166", "Graves I, 92.10"]
+        },
+        graves: {
+          intro: "Graves separa el núcleo homérico de las tradiciones posteriores sobre el talón, el funeral y la muerte del héroe.",
+          points: ["Relaciona la herida en el talón con otros relatos de muerte por una flecha y con motivos rituales que compara entre ciclos.", "Subraya que la Ilíada no narra la muerte de Aquiles y que las versiones posteriores no deben proyectarse sobre Homero.", "Trata las tradiciones heroicas como relatos superpuestos, no como una biografía uniforme."],
+          sources: ["Graves II, 163–166", "Graves I, 92.10", "Homero, Ilíada 16; 22–24"],
+          caveat: "Las explicaciones de Graves sobre el origen ritual del talón vulnerable son conjeturales; la datación del motivo exige distinguir cada testimonio."
+        }
+      },
+      trojanHorse: {
+        title: "El caballo de madera y el saqueo de Troya",
+        reference: "Graves · tomo II, mitos 167–168: «El caballo de madera» y «El saqueo de Troya»",
+        official: {
+          intro: "Los griegos dejan un enorme caballo de madera ante Troya y fingen retirarse. Los troyanos lo introducen en la ciudad; de noche, los guerreros ocultos abren las puertas y comienza el saqueo.",
+          points: ["Odiseo y Epeo ocupan papeles centrales en la construcción o el plan; las tradiciones no asignan el mérito del mismo modo.", "Laocoonte y Casandra advierten del peligro, pero sus voces son ignoradas; sus destinos varían según el autor.", "Los relatos del saqueo, las muertes y los cautivos difieren entre la épica, la tragedia y la poesía romana."],
+          sources: ["Homero, Odisea 8.492–520; 11.523–532", "Virgilio, Eneida 2", "Apolodoro, Epítome 5.14–21", "Graves II, 167–168"]
+        },
+        variants: {
+          intro: "Los testimonios antiguos discuten si el caballo fue un ardid, una máquina de asedio o una imagen transformada por la tradición.",
+          points: ["En la Odisea el caballo es un engaño y una ofrenda; otras versiones desarrollan la entrada de los guerreros y la función de Sinón.", "Laocoonte muere por serpientes marinas en la tradición virgiliana, pero su relato y el de sus hijos no aparecen igual en todos los autores.", "Cambian el orden del saqueo, la identidad de los muertos y las rutas de escape de los sobrevivientes."],
+          sources: ["Homero, Odisea 8.492–520", "Virgilio, Eneida 2", "Apolodoro, Epítome 5.14–21", "Graves II, 167–168"]
+        },
+        graves: {
+          intro: "Graves examina la posibilidad de que una máquina de asedio y varias tradiciones épicas confluyeran en la imagen del caballo.",
+          points: ["Considera probable que Troya fuese tomada con una torre de madera con ruedas y que el relato posterior reinterpretara su forma.", "Compara los episodios del caballo, Laocoonte y los saqueos de santuarios, distinguiendo hipótesis de testimonios narrativos.", "El motivo del caballo pudo crecer en la transmisión épica; Graves no convierte esa lectura en evidencia arqueológica definitiva."],
+          sources: ["Graves II, 167.1–6; 168", "Homero, Odisea 8.492–520", "Virgilio, Eneida 2"],
+          caveat: "La torre de asedio como origen del caballo es una hipótesis de Graves; no está confirmada por las fuentes ni por un hallazgo que identifique el episodio."
+        }
+      },
+      odyssey: {
+        title: "Odiseo: viajes y regreso a Ítaca",
+        reference: "Graves · tomo II, mitos 170–171: viajes y vuelta al hogar",
+        official: {
+          intro: "Después de Troya, Odiseo navega durante años entre pueblos y monstruos antes de regresar a Ítaca. Allí, con ayuda de Telémaco y Atenea, derrota a los pretendientes y vuelve a reunirse con Penélope.",
+          points: ["La Odisea incluye episodios como los cícones, los lotófagos, Polifemo, Circe, el descenso al Hades, las Sirenas y Calipso.", "La secuencia del viaje de regreso difiere de relatos anteriores sobre los nostoi y se organiza alrededor del narrador Odiseo.", "El reconocimiento en Ítaca, la prueba del arco y el final de los pretendientes tienen variantes y continuaciones posteriores."],
+          sources: ["Homero, Odisea", "Apolodoro, Epítome 7", "Graves II, 170–171"]
+        },
+        variants: {
+          intro: "Graves recoge itinerarios, identidades y desenlaces distintos para los viajes de Odiseo y el regreso a Ítaca.",
+          points: ["Los lugares de las aventuras pueden ser geográficos, alegóricos o fantásticos; autores antiguos los sitúan en distintas costas.", "Las tradiciones cambian las estancias con Circe y Calipso, la duración del regreso y la suerte de los compañeros.", "La muerte de Odiseo aparece en relatos que no coinciden con la escena final de la Odisea, incluido el oráculo sobre Telégono."],
+          sources: ["Homero, Odisea 9–12; 13–24", "Apolodoro, Epítome 7", "Higino, Fábula 125", "Graves II, 170–171"]
+        },
+        graves: {
+          intro: "Graves lee los viajes como una trama que reúne folclore, geografía y relatos locales de navegación.",
+          points: ["Compara versiones de los nostoi y advierte que varios lugares no pueden identificarse con certeza en un mapa moderno.", "Relaciona episodios de metamorfosis, hospitalidad y monstruos con motivos que aparecen también en otros ciclos heroicos.", "Distingue el retorno épico de las tradiciones tardías sobre la muerte de Odiseo y su linaje."],
+          sources: ["Graves II, 170–171", "Homero, Odisea", "Apolodoro, Epítome 7"],
+          caveat: "Las identificaciones geográficas y el origen folclórico de cada episodio son propuestas comparativas, no itinerarios históricos demostrados."
+        }
+      }
+    };
+    Object.assign(MYTHS, ADDITIONAL_MYTHS);
+
+    /* Metadatos para orientar la navegación y añadir sinónimos al buscador del atlas. */
+    const MYTH_META = {
+      persephone: { category: "Rito agrario", terms: "core granada eleusis demeter cereal inframundo estación" },
+      heracles: { category: "Ciclo heroico", terms: "heracles hercules trabajos euristeo leon hidra doce pruebas" },
+      paris: { category: "Guerra de Troya", terms: "paris helena juicio manzana hera atenea afrodita ciprias" },
+      minotaur: { category: "Creta y Atenas", terms: "teseo ariadna minos tauro laberinto creta cnossos minotauro" },
+      pelasgian: { category: "Orígenes", terms: "eurinome ofion huevo cosmogonia caos paloma serpiente" },
+      uranus: { category: "Orígenes", terms: "gea cronos castracion erinias titanes afrodita hoz cielo" },
+      cronus: { category: "Orígenes", terms: "zeus rea curetes creta titanes titanomaquia amaltea piedra" },
+      athenaBirth: { category: "Dioses olímpicos", terms: "metis zeus cabeza palas nacimiento neith sabiduria" },
+      aphroditeBirth: { category: "Dioses olímpicos", terms: "afrodita citera chipre dione espuma urano amor" },
+      hermes: { category: "Dioses olímpicos", terms: "maya robo vacas lira apolo delos ortigia artemis hermes" },
+      apolloPython: { category: "Dioses olímpicos", terms: "piton delfos pitia gea temis oraculo juegos píticos" },
+      athena: { category: "Dioses olímpicos", terms: "posidon olivo acropolis erictonio athena atenas lechuza" },
+      dionysus: { category: "Dioses olímpicos", terms: "semele penteo vino bacantes nacido dos veces menades toro" },
+      orpheus: { category: "Criaturas y ritos", terms: "euridice inframundo lira canto muerte misterios apolo" },
+      deucalion: { category: "Orígenes", terms: "pirra inundacion diluvio piedras humanidad parnaso arca" },
+      prometheus: { category: "Orígenes", terms: "fuego zeus pandora encadenado águila sacrificio titán" },
+      asclepius: { category: "Cultos y héroes", terms: "esculapio coronis quiron medicina serpiente higia epidauro" },
+      io: { category: "Ritos y metamorfosis", terms: "hera inaco argos panoptes hermes vaca egipto epafos tabano" },
+      europaCadmus: { category: "Tebas y fundaciones", terms: "europa fenicia toro cadmo armonia tebano espartos serpiente dientes" },
+      perseus: { category: "Héroes y monstruos", terms: "perseo gorgona medusa andromeda danae acrisio pegaso" },
+      bellerophon: { category: "Héroes y monstruos", terms: "belerofonte pegaso quimera licia atenea yobates filonoe" },
+      daedalus: { category: "Creta y Atenas", terms: "dedalo ícaro talos perdiz laberinto minos cera alas" },
+      oedipus: { category: "Tebas", terms: "edipo esfinge layo yocasta enigma antigona oraculo" },
+      sevenThebes: { category: "Tebas", terms: "eteocles polinices antígona creonte epigonos tebas guerra" },
+      atreusThyestes: { category: "Micenas y Argos", terms: "atreo tiestes aérope vellocino pelops egisto micenas hijos banquete" },
+      oresteia: { category: "Micenas y Argos", terms: "orestes clitemnestra agamenon electra erinias apolo atenea areopago" },
+      argonauts: { category: "Argonautas", terms: "jasón argo vellocino colquide eetes medea simplégades argonautas" },
+      medea: { category: "Argonautas", terms: "jasón glauce corinto apsirto euripides hechicera hijos exilio" },
+      achilles: { category: "Guerra de Troya", terms: "aquiles patroclo hector paris talon apolo iliada" },
+      trojanHorse: { category: "Guerra de Troya", terms: "caballo troya laocoonte sinón saqueo epeo ilion madera" },
+      odyssey: { category: "Viajes y regresos", terms: "odiseo ulises penelope itaca circe calipso polifemo sirenas nostoi" }
+    };
+
+    /* Fichas del léxico: en el campo etimológico se distingue la propuesta del autor del silencio de las fuentes. */
+    const LEXICON = [
+      {
+        name: "Apolo", type: "deidad", typeLabel: "Deidad", search: "apolo apollon delfos piton esminteo raton", summary: "Dios oracular y musical cuya historia Graves lee como una sucesión de apropiaciones cultuales.",
+        etymology: "Graves no establece una etimología segura para el nombre Apolo. Sí glosa «Esminteo» como «ratón» y relaciona ese epíteto local con un emblema curativo (I, 21.3).",
+        substrate: "El oráculo de Delfos habría pertenecido primero a la Madre Tierra; Graves interpreta la victoria sobre Pitón como toma y reorganización del santuario (I, 21.3; 51.1).",
+        cult: "Oráculo, laurel, lira y medicina; el ratón aparece en el epíteto Esminteo. El vínculo con Horus es una comparación propuesta por Graves, no una identidad comprobada.",
+        refs: ["Graves I, 21.1–14", "Graves I, 51.1–2", "Himno homérico a Apolo"]
+      },
+      {
+        name: "Atenea", type: "deidad", typeLabel: "Deidad", search: "atenea athena neith buho lechuza serpiente olivo", summary: "Protectora de Atenas, artesana y estratega; en Graves conserva huellas de una diosa anterior a la síntesis olímpica.",
+        etymology: "Graves no propone aquí una etimología lingüística segura de «Atenea». Vincula comparativamente a la Atenea primitiva con figuras como Neith y la diosa lunar triple (Introducción; I, 25.1–2).",
+        substrate: "Su imagen olímpica reúne rasgos que Graves distribuye entre Doncella, Ninfa y Anciana; sostiene que algunos mitos se reordenaron para subrayar su virginidad y su lugar bajo Zeus.",
+        cult: "Lechuza y serpiente; olivo, tejido y cerámica. Graves relaciona el olivo con Atenea y el niño-serpiente Erictonio con los cultos atenienses antiguos.",
+        refs: ["Graves I, Introducción", "Graves I, 25.1–3", "Graves I, 51.1"]
+      },
+      {
+        name: "Dioniso", type: "deidad", typeLabel: "Deidad", search: "dioniso dionisio dionysos vino vid hiedra toro serpiente leon", summary: "Dios del vino y del éxtasis, asociado por Graves con cultos de vegetación, muerte y retorno.",
+        etymology: "Graves no deriva de forma concluyente el teónimo. Señala que oînos («vino») sería una palabra cretense y usa la difusión del vino para explicar la expansión del culto (I, 27.1 y 27.8).",
+        substrate: "Interpreta el culto como una superposición de prácticas de la vid, ritos estacionales y posterior integración olímpica; el propio autor ofrece escenarios diversos.",
+        cult: "Vid, hiedra, granada y ménades; Graves asigna al dios formas de serpiente en invierno, león en primavera y toro (o cabra/ciervo en variantes) en el ciclo estival (I, 27.4, 27.8–10).",
+        refs: ["Graves I, 27.1–12", "Graves I, Prólogo", "Eurípides, Bacantes"]
+      },
+      {
+        name: "Medusa", type: "deidad", typeLabel: "Figura divina", search: "medusa gorgona gorgoneion mascara serpientes neith luna perseo", summary: "Gorgona decapitada por Perseo; Graves vuelve a leer su rostro como objeto ritual y protector.",
+        etymology: "En I, 33.3, Graves glosa Medusa como «la astuta» y considera los nombres de las Gorgonas títulos de la diosa lunar; es una etimología propuesta por el autor, no una derivación que deba darse por consenso.",
+        substrate: "En I, 33.3 y 73.5–6, interpreta la máscara como atributo de una diosa lunar y de sus sacerdotisas; la decapitación representaría, en su modelo, la conquista de santuarios.",
+        cult: "Máscara apotropaica, serpientes y caballo/yegua en la iconografía comparada que propone Graves. Son asociaciones de su reconstrucción, no una descripción uniforme de todos los cultos griegos.",
+        refs: ["Graves I, Introducción", "Graves I, 33.3", "Graves I, 73.5–9"]
+      },
+      {
+        name: "Serpiente", type: "simbolo", typeLabel: "Símbolo", search: "serpiente ophion python piton ofion oraculo muertos renacimiento", summary: "Motivo ctónico, oracular y renovador: su sentido cambia según mito, santuario y contexto.",
+        etymology: "Graves no propone una etimología única para «serpiente». En el mito pelasgo, llama a Ofión serpiente demiúrgica; en otros lugares atiende a nombres locales como Pitón.",
+        substrate: "Relaciona la serpiente oracular con la Madre Tierra y con el héroe o antepasado enterrado en el santuario; también la emplea en su lectura estacional de Dioniso.",
+        cult: "Serpiente sagrada en Delfos y el Erecteón; asociada en Graves con oráculos, ancestros y regeneración por la muda de piel. No la convierte en un tótem universal.",
+        refs: ["Graves I, 1.1–2", "Graves I, 21.3", "Graves I, 25.2", "Graves I, 27.4", "Graves I, 51"]
+      },
+      {
+        name: "Roble de Dodona", type: "simbolo", typeLabel: "Símbolo", search: "roble encina dodona dione dia zeus paloma hojas oraculo", summary: "Árbol oracular y emblema de una capa religiosa anterior a la versión olímpica de Zeus.",
+        etymology: "Graves vincula a Día/Dione con el roble oracular de Dodona; no ofrece una etimología botánica del «roble». Trata Día como un título divino, no como una prueba lingüística concluyente.",
+        substrate: "En su esquema, Zeus adopta el oráculo del roble, antes asociado con Día/Dione y la Madre Tierra. Extiende la comparación a otros cultos arbóreos (I, 51.1–2).",
+        cult: "Encina, paloma, susurro de hojas y vasijas de bronce colgadas de las ramas; también conecta roble, fresno, realeza y ritos de lluvia en su lectura comparativa.",
+        refs: ["Graves I, 7.6", "Graves I, 51.1–2", "Graves I, 1.1"]
+      },
+      {
+        name: "Deméter", type: "deidad", typeLabel: "Deidad", search: "demeter demeter cereal cebada trigo madre tierra eleusis", summary: "Diosa del cereal, de la cosecha y de los Misterios eleusinos.",
+        etymology: "Graves glosa el nombre como «diosa de la Cebada» (I, 7.8). Se presenta como la explicación etimológica del autor, no como consenso filológico establecido.",
+        substrate: "La presenta como título general de la diosa agraria y como figura materna de los ritos de siembra y cosecha; en I, 24 la relaciona con misterios agrícolas.",
+        cult: "Cereal, campo arado, higo y serpientes del carro de Triptólemo; el culto eleusino y la transmisión de la agricultura son sus núcleos simbólicos.",
+        refs: ["Graves I, 7.8", "Graves I, 24.1–5", "Himno homérico a Deméter"]
+      },
+      {
+        name: "Core / Perséfone", type: "deidad", typeLabel: "Deidad", search: "core kore persefone persephone granada semilla cereal muerte", summary: "Doncella, reina de los muertos y figura de la germinación en el ciclo de Deméter.",
+        etymology: "Graves ensaya «la que trae la destrucción» para Perséfone, mediante un juego con phero y phonos; para Persefata propone otra segmentación. Son etimologías especulativas de Graves (I, 24.2).",
+        substrate: "La lee como parte de una tríada agraria: Core sería el grano verde, Perséfone la espiga madura y Hécate el cereal cosechado (I, 24.1).",
+        cult: "Granada, semilla enterrada, descenso al inframundo y retorno. Graves relaciona el motivo con los Misterios y con la renovación estacional de la tierra.",
+        refs: ["Graves I, 24.1–3", "Apolodoro 1.5", "Pausanias 1.14.2"]
+      },
+      {
+        name: "Ariadna", type: "deidad", typeLabel: "Figura divina", search: "ariadna ariadne ariane aridela luna toro laberinto creta", summary: "Princesa cretense y guía de Teseo; en Graves también título de la diosa lunar local.",
+        etymology: "Graves recoge la interpretación griega «Ariagne», «muy santa», y propone que Ariadna fuera un título de la diosa lunar cretense; la deriva verbal es conjetural (I, 98.5).",
+        substrate: "La vincula con la autoridad ritual de la heredera y con el paso del poder en Cnosos; la versión de Ariadna abandonada compite con relatos de matrimonio y culto local.",
+        cult: "Luna, cebada, danza laberíntica, toro y corona nupcial; sus asociaciones aparecen ligadas a cosecha y a la celebración de Dioniso en la lectura de Graves.",
+        refs: ["Graves I, 98.5–9", "Graves I, 27.8", "Plutarco, Teseo 20–21"]
+      },
+      {
+        name: "Minos", type: "heroe", typeLabel: "Rey / héroe", search: "minos minos rey creta cnosos toro minotauro dinastia", summary: "Rey cretense; Graves lo trata como posible título dinástico, más que como biografía de un solo soberano.",
+        etymology: "Graves no ofrece una derivación léxica segura. Sugiere que Minos era un título regio de una dinastía y lo asocia con el «ser lunar» tomado de la sacerdotisa (I, 88.1).",
+        substrate: "La historia de Minos conservaría capas de soberanía cretense, sucesión y relación con Atenas, según la reconstrucción histórico-política del autor.",
+        cult: "Toro celeste, sacrificio a Posidón, sacerdocio lunar y palacio de Cnosos; el toro funciona como emblema de poder en los mitos que Graves compara.",
+        refs: ["Graves I, 88.1–2", "Graves I, 98.1–2", "Graves I, 90"]
+      },
+      {
+        name: "Laberinto", type: "simbolo", typeLabel: "Símbolo", search: "laberinto labyrinth labrys hacha doble cnossos danza hilo", summary: "Prisión mítica, palacio complejo y trazado de danza: Graves mantiene abiertas varias posibilidades.",
+        etymology: "Graves glosa el palacio como «casa del labrys», la hacha doble cretense, en su hipótesis sobre el nombre del Laberinto. La relación etimológica es discutida.",
+        substrate: "Además de corredores de Cnosos, considera una pista de danza con dibujo laberíntico y un patrón ritual; no reduce el motivo a una sola explicación.",
+        cult: "Hacha doble, toro, danza de la grulla y el hilo de Ariadna. Graves interpreta el hilo como posible recuerdo de una cuerda guía en danzas laberínticas.",
+        refs: ["Graves I, 98.2–4", "Graves I, 51.2", "Graves I, 92.4"]
+      },
+      {
+        name: "Toro", type: "simbolo", typeLabel: "Animal / símbolo", search: "toro tauro creta minotauro dioniso lluvia fertilidad cuernos", summary: "Animal de poder, sacrificio y fertilidad; su papel varía entre los ciclos cretenses y dionisíacos.",
+        etymology: "Graves no presenta aquí una etimología de «toro». Interpreta «Tauro» como nombre parlante en la variante del general cretense y relaciona varios relatos con el toro de Minos.",
+        substrate: "El toro puede ser la teofanía de una divinidad, la prueba del aspirante al poder o un recuerdo de relaciones políticas. En II, 129.1 Graves compara los tres usos.",
+        cult: "Cuernos, sacrificio, rito de coronación y fertilidad/lluvia; en los comentarios de Dioniso, el toro es una de sus formas estacionales.",
+        refs: ["Graves I, 88.e–g", "Graves I, 98.2", "Graves II, 129.1", "Graves I, 27.4"]
+      },
+      {
+        name: "Heracles", type: "heroe", typeLabel: "Héroe", search: "heracles hercules trabajos reina rey ritual leon toro calendario", summary: "Héroe de ciclos acumulativos; Graves advierte que una figura mítica puede reunir generaciones y cultos distintos.",
+        etymology: "Graves no explica aquí el nombre como una biografía etimológica única. En la Introducción señala que vidas como la de Heracles pueden abarcar varias generaciones y funcionar como títulos heroicos.",
+        substrate: "Los trabajos son, en su lectura, hazañas rituales ligadas a la realeza sagrada y a la unión con una figura regia femenina; también contienen leyendas locales y viajes.",
+        cult: "León, toro, serpiente, árbol y calendario de pruebas; los animales pueden funcionar como figuras estacionales en la propuesta de Graves.",
+        refs: ["Graves I, Introducción", "Graves II, 123.1", "Graves II, 129.1", "Graves II, 132.1"]
+      },
+      {
+        name: "Lechuza", type: "culto", typeLabel: "Animal / culto", search: "lechuza buho athena atenea clan totemico", summary: "Emblema destacado de Atenea y, para Graves, resto posible de un culto totémico ateniense.",
+        etymology: "Graves no ofrece una etimología para el nombre del ave. Distingue la lechuza como epifanía principal de Atenea entre otros emblemas animales (I, 25.2; 98.4).",
+        substrate: "Propone que algunos clanes atenienses tenían animales totémicos y que el culto de la lechuza persistió en rituales locales.",
+        cult: "Lechuza, olivo, serpiente y actividades artesanales. La lectura totémica es una hipótesis comparativa de Graves.",
+        refs: ["Graves I, 25.2", "Graves I, 98.4"]
+      }
+    ];
+
+    /* Preguntas para el ejercicio: cada clave resume lo que Graves plantea, no una verdad normativa. */
+    const QUESTIONS = [
+      {
+        topic: "RITO AGRARIO · PERSEFÓNE",
+        title: "¿Qué detalles del relato permiten leer el rapto como algo más que una historia familiar?",
+        context: "En el mito de Deméter, la desaparición de Core detiene los frutos; el retorno se negocia junto con el destino de las semillas de granada.",
+        hint: "Distingue la secuencia narrativa del uso de imágenes agrícolas: grano verde, entierro, germinación y cosecha.",
+        source: "Referencia: Graves I, 24.1–3; Himno homérico a Deméter.",
+        key: "Graves interpreta a Core, Perséfone y Hécate como fases del cereal, y entiende el rapto y retorno como una forma de narrar el ciclo agrario. Añade que la unión de Hades con Core puede expresar una apropiación masculina de misterios agrícolas femeninos. Es una reconstrucción comparativa suya: la analogía estacional no demuestra por sí sola cómo se originó el culto.",
+        check: "¿Tu hipótesis distingue el símbolo agrícola de la afirmación histórica sobre quién controlaba el rito? ¿Qué fuente permitiría respaldar esa afirmación?"
+      },
+      {
+        topic: "RITO REGIO · HERACLES",
+        title: "¿Por qué Graves relaciona los trabajos de Heracles con la realeza y el calendario?",
+        context: "La lista reúne animales, pruebas de fuerza, viajes y objetos sagrados; el toro de Creta conecta varios episodios distintos.",
+        hint: "Compara el orden de las pruebas y el valor simbólico que Graves asigna a sus animales. Evita dar por supuesto que cada tarea tuvo un origen ritual.",
+        source: "Referencia: Graves II, 123.1, 129.1 y 132.1.",
+        key: "Graves propone que los trabajos guardan ecos de hazañas rituales que habilitaban al héroe como consorte de una reina o figura regia. En ciertos animales ve marcadores del calendario: dominar las fieras significaría dominar estaciones o fuerzas de la naturaleza. La propuesta intenta explicar la diversidad de relatos, pero cada correspondencia requiere evidencia independiente.",
+        check: "¿Qué datos del mito son testimonios antiguos y cuáles son equivalencias simbólicas introducidas por Graves? ¿Podría explicar la lista una acumulación literaria de cultos locales?"
+      },
+      {
+        topic: "ICONOGRAFÍA · PARIS",
+        title: "¿Qué evidencia usa Graves para poner en duda que el juicio de las tres diosas fuera el episodio original?",
+        context: "El ciclo de Paris incluye una manzana, tres diosas, una promesa de matrimonio y versiones incompatibles sobre dónde estuvo Helena.",
+        hint: "Separa tres niveles: el relato transmitido, la descripción de una imagen y la interpretación que el mitógrafo extrae de ella.",
+        source: "Referencia: Graves II, 159.1–3; Ciprias (resumen de Proclo); Heródoto 2.112–120.",
+        key: "En II, 159.3 Graves conjetura que la escena del juicio pudo surgir de una lectura errónea de una imagen que representaba otro rito, como la entrega de manzanas de las Hespérides a Heracles. Por separado, toma en serio la versión de Estesícoro en la que Helena no llega a Troya. Ambas son propuestas de Graves sobre cómo se formó el mito, no conclusiones obligatorias de las fuentes.",
+        check: "¿La imagen que Graves propone explica todos los elementos del relato? ¿Qué evidencia independiente permitiría fechar y reconocer esa escena iconográfica?"
+      },
+      {
+        topic: "MEMORIA POLÍTICA · MINOTAURO",
+        title: "¿Cómo convierte Graves el relato del Minotauro en una hipótesis sobre el poder cretense?",
+        context: "Los elementos clave son el tributo de jóvenes, el toro, el palacio laberíntico, Teseo y el vínculo con Ariadna.",
+        hint: "Busca qué cambia cuando Minos deja de ser sólo un personaje y se lee como un título dinástico; compara al monstruo con Tauro, el general.",
+        source: "Referencia: Graves I, 88.1–2; 98.1–6; II, 129.1.",
+        key: "Graves trata el mito como posible recuerdo de una relación de dominio entre Creta y Atenas. Lee el tributo como rehenes o subordinación y la victoria de Teseo como una revuelta seguida por un arreglo dinástico con Ariadna. También propone que el Minotauro, el toro y el general Tauro sean versiones de un mismo conflicto. Es una hipótesis histórico-mitográfica que no debe confundirse con un hecho arqueológico establecido.",
+        check: "¿Qué parte de la hipótesis podría contrastarse con evidencia material? ¿Qué elementos son analogía simbólica y cuáles serían indicios históricos?"
+      },
+      {
+        topic: "TRANSFERENCIA CULTUAL · APOLO",
+        title: "¿Qué cambio de autoridad ve Graves en la victoria de Apolo sobre Pitón?",
+        context: "El relato sitúa a Pitón en el oráculo de Delfos, asociado primero con la Madre Tierra; Apolo ocupa luego el santuario.",
+        hint: "Distingue la trama mítica de Graves: ¿quién habla en el oráculo, quién administra el santuario y qué rito posterior conserva una memoria del conflicto?",
+        source: "Referencia: Graves I, 21.1–3 y 21.12–14; 51.1–2.",
+        key: "Graves interpreta la muerte de Pitón como una narración política sobre la ocupación de un oráculo de la Madre Tierra por seguidores de Apolo. La retención de la sacerdotisa y la instauración de juegos en honor de Pitón serían, para él, indicios de incorporación y no de desaparición absoluta del culto anterior. La secuencia histórica que propone no queda probada sólo por el mito.",
+        check: "¿Qué partes son atribuibles al himno antiguo y cuáles aparecen en el comentario de Graves? ¿Qué otras explicaciones tiene la coexistencia de Apolo y Pitón?"
+      },
+      {
+        topic: "SÍMBOLO · MEDUSA",
+        title: "¿Qué cambia si la cabeza de Gorgona se lee como emblema protector y no sólo como monstruo?",
+        context: "Perseo evita mirar a Medusa directamente y utiliza un escudo pulido; la cabeza conserva su poder después de la decapitación.",
+        hint: "Analiza quién porta la máscara, a quién excluye y qué relación establece Graves entre icono, templo y cambio de autoridad.",
+        source: "Referencia: Graves I, Introducción; 33.3; 73.5–6.",
+        key: "Graves recoge la hipótesis de que la máscara de Gorgona fue un signo apotropaico de una diosa y de sus sacerdotisas. En su relato, Perseo despojándola de la cabeza puede simbolizar una toma de santuarios y la apropiación de objetos sagrados. La lectura de la imagen es una conjetura interpretativa, no una descripción consensuada de todos los cultos de Medusa.",
+        check: "¿Qué objeto arqueológico o representación respaldaría esa lectura? ¿Cómo evitar convertir una comparación entre imágenes en una narración histórica segura?"
+      },
+      {
+        topic: "ESTRUCTURA · MÉTODO",
+        title: "¿Qué tendría que mostrar un mito para que Graves lo considere un registro ritual o etnohistórico?",
+        context: "En la Introducción, Graves describe algunos mitos como relatos abreviados de pantomimas, ceremonias e instituciones que cambiaron con el tiempo.",
+        hint: "Examina nombres, genealogías, emblemas, lugares, variantes y testimonios iconográficos; luego pregunta si la reconstrucción explica más que sus rivales.",
+        source: "Referencia: Graves I, Introducción; capítulos 1–2 y notas explicativas.",
+        key: "Graves propone recomponer variantes, atender a nombres y procedencias, y buscar tras el relato posibles ritos e instituciones. Su método es comparativo e iconográfico: un mito puede contener historia política y cambio religioso. Para una evaluación rigurosa hay que contrastarlo con cronología, arqueología y lingüística, y mantener abierta la posibilidad de que una semejanza sea accidental.",
+        check: "¿Qué fuente independiente podría confirmar o refutar tu lectura? ¿Has separado la explicación de Graves de los datos que él cita?"
+      }
+    ];
+
+    /* ================================================================
+       Utilidades de interfaz y persistencia local (sin envío de datos).
+       ================================================================ */
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+    const safeGet = (key, fallback = "") => {
+      try { return localStorage.getItem(key) ?? fallback; } catch (_) { return fallback; }
+    };
+    const safeSet = (key, value) => {
+      try { localStorage.setItem(key, value); } catch (_) { /* file:// puede restringir el almacenamiento */ }
+    };
+    const escapeHTML = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[char]));
+    const fold = (value) => String(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+    /* Navegación por pestañas con teclado y restauración de la última vista. */
+    const tabButtons = $$("[role='tab']");
+    const tabPanels = $$("[role='tabpanel']");
+    function activateTab(name, focusButton = false) {
+      tabButtons.forEach((button) => {
+        const active = button.dataset.tab === name;
+        button.setAttribute("aria-selected", String(active));
+        button.tabIndex = active ? 0 : -1;
+        if (active && focusButton) button.focus();
+      });
+      tabPanels.forEach((panel) => { panel.hidden = panel.id !== `panel-${name}`; });
+      safeSet("mythos-active-tab", name);
+    }
+    tabButtons.forEach((button, index) => {
+      button.addEventListener("click", () => activateTab(button.dataset.tab));
+      button.addEventListener("keydown", (event) => {
+        let target = null;
+        if (event.key === "ArrowRight") target = (index + 1) % tabButtons.length;
+        if (event.key === "ArrowLeft") target = (index - 1 + tabButtons.length) % tabButtons.length;
+        if (event.key === "Home") target = 0;
+        if (event.key === "End") target = tabButtons.length - 1;
+        if (target !== null) {
+          event.preventDefault();
+          activateTab(tabButtons[target].dataset.tab, true);
+        }
+      });
+    });
+    const savedTab = safeGet("mythos-active-tab", "matrix");
+    activateTab(["matrix", "lexicon", "lab"].includes(savedTab) ? savedTab : "matrix");
+
+    /* Índice completo y búsqueda local: títulos, personajes, temas, fuentes y texto de las fichas. */
+    const mythSelect = $("#myth-select");
+    const mythSearchInput = $("#myth-search");
+    const mythPicker = $("#myth-picker");
+    const mythSearchCount = $("#myth-search-count");
+    const catalogStat = $("#catalog-stat");
+    const mythEntries = Object.entries(MYTHS);
+    mythSelect.innerHTML = mythEntries.map(([key, myth]) => {
+      const category = MYTH_META[key]?.category || "Mito";
+      return `<option value="${escapeHTML(key)}">${escapeHTML(myth.title)} · ${escapeHTML(category)}</option>`;
+    }).join("");
+
+    const MYTH_LAYERS = [
+      { key: "official", number: "01", label: "SÍNTESIS DEL RELATO", title: "Relato de referencia", className: "layer-official" },
+      { key: "variants", number: "02", label: "TESTIMONIOS ANTIGUOS", title: "Variantes locales y arcaicas", className: "layer-variants" },
+      { key: "graves", number: "03", label: "LECTURA DEL AUTOR", title: "Interpretación de Graves", className: "layer-graves" }
+    ];
+    let expandedMythId = null;
+    function syncMythDetailsVisibility() { $("#myth-cards").hidden = Boolean(expandedMythId); }
+
+    function renderMythLayers(myth) {
+      return MYTH_LAYERS.map((layer) => {
+        const item = myth[layer.key];
+        const points = item.points.map((point) => `<li>${escapeHTML(point)}</li>`).join("");
+        const sources = item.sources.map((source) => `<span class="source-chip">${escapeHTML(source)}</span>`).join("");
+        const caveat = item.caveat ? `<p class="card-caveat"><strong>Nota crítica:</strong> ${escapeHTML(item.caveat)}</p>` : "";
+        return `<article class="myth-card ${layer.className}">
+          <div class="card-kicker"><span>${layer.label}</span><span class="card-number">${layer.number}</span></div>
+          <h3>${layer.title}</h3>
+          <p class="card-intro">${escapeHTML(item.intro)}</p>
+          <ul>${points}</ul>
+          <span class="source-label">Fuentes y referencias</span>
+          <div class="source-chips">${sources}</div>
+          ${caveat}
+        </article>`;
+      }).join("");
+    }
+
+    function renderExpandedMythDetails(key) {
+      const myth = MYTHS[key];
+      return `<div class="myth-expanded-heading">
+        <div><span class="overline">Ficha detallada · tres capas</span><h3>${escapeHTML(myth.title)}</h3></div>
+        <button type="button" class="myth-expanded-close" data-close-myth="${escapeHTML(key)}" aria-label="Cerrar ficha de ${escapeHTML(myth.title)}">Cerrar ficha</button>
+      </div>
+      <div class="myth-grid grid" aria-label="Relato, variantes y lectura de Graves">${renderMythLayers(myth)}</div>`;
+    }
+
+    function closeExpandedMyth(restoreFocus = false) {
+      if (!expandedMythId) return;
+      const entry = mythPicker.querySelector(`[data-entry="${expandedMythId}"]`);
+      const trigger = entry?.querySelector(".myth-picker-button");
+      const detail = entry?.querySelector(".myth-picker-expanded");
+      entry?.classList.remove("is-expanded");
+      if (detail) { detail.hidden = true; detail.innerHTML = ""; }
+      trigger?.setAttribute("aria-expanded", "false");
+      expandedMythId = null;
+      syncMythDetailsVisibility();
+      if (restoreFocus) trigger?.focus();
+    }
+
+    function toggleExpandedMyth(key) {
+      if (!MYTHS[key]) return;
+      if (expandedMythId === key) { closeExpandedMyth(); return; }
+      closeExpandedMyth();
+      const entry = mythPicker.querySelector(`[data-entry="${key}"]`);
+      const trigger = entry?.querySelector(".myth-picker-button");
+      const detail = entry?.querySelector(".myth-picker-expanded");
+      if (!entry || !trigger || !detail) return;
+      expandedMythId = key;
+      entry.classList.add("is-expanded");
+      detail.innerHTML = renderExpandedMythDetails(key);
+      detail.hidden = false;
+      syncMythDetailsVisibility();
+      trigger.setAttribute("aria-expanded", "true");
+    }
+
+    function renderMythCatalog() {
+      const term = fold(mythSearchInput.value.trim());
+      const matches = mythEntries.filter(([key, myth]) => {
+        const meta = MYTH_META[key] || {};
+        const searchable = fold([key, myth.title, myth.reference, meta.category, meta.terms, JSON.stringify(myth)].join(" "));
+        return !term || searchable.includes(term);
+      });
+      if (expandedMythId && !matches.some(([key]) => key === expandedMythId)) expandedMythId = null;
+      syncMythDetailsVisibility();
+      const total = mythEntries.length;
+      catalogStat.textContent = String(total);
+      mythSearchCount.textContent = term
+        ? `${matches.length} de ${total} ${total === 1 ? "ficha" : "fichas"}`
+        : `${total} fichas disponibles`;
+      mythPicker.innerHTML = matches.length ? matches.map(([key, myth]) => {
+        const category = MYTH_META[key]?.category || "Mito";
+        const selected = mythSelect.value === key;
+        const expanded = expandedMythId === key;
+        const expandedDetail = expanded ? renderExpandedMythDetails(key) : "";
+        return `<div class="myth-picker-entry${expanded ? " is-expanded" : ""}" data-entry="${escapeHTML(key)}">
+          <button type="button" class="myth-picker-button" data-myth="${escapeHTML(key)}" aria-pressed="${selected}" aria-expanded="${expanded}" aria-controls="myth-detail-${escapeHTML(key)}" aria-label="${escapeHTML(myth.title)}. ${escapeHTML(category)}. ${escapeHTML(myth.reference)}. Doble clic o Enter para desplegar la ficha completa.">
+            <span class="myth-picker-category">${escapeHTML(category)}</span>
+            <span class="myth-picker-title">${escapeHTML(myth.title)}</span>
+            <span class="myth-picker-reference">${escapeHTML(myth.reference.replace(/^Graves · /, ""))}</span>
+          </button>
+          <div id="myth-detail-${escapeHTML(key)}" class="myth-picker-expanded" aria-label="Ficha detallada: ${escapeHTML(myth.title)}" ${expanded ? "" : "hidden"}>${expandedDetail}</div>
+        </div>`;
+      }).join("") : `<p class="empty-state myth-no-results" role="status">No hay coincidencias para «${escapeHTML(mythSearchInput.value.trim())}». Borra la búsqueda para volver a ver todo el catálogo.</p>`;
+      $$(".myth-picker-button", mythPicker).forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.myth === mythSelect.value));
+        button.setAttribute("aria-expanded", String(button.dataset.myth === expandedMythId));
+      });
+    }
+
+    function renderMyth() {
+      const selected = MYTHS[mythSelect.value] ? mythSelect.value : "persephone";
+      const myth = MYTHS[selected];
+      mythSelect.value = selected;
+      safeSet("mythos-selected-myth", selected);
+      $("#myth-reference").innerHTML = `<strong>Referencia:</strong> ${escapeHTML(myth.reference)}`;
+      $("#myth-cards").innerHTML = renderMythLayers(myth);
+      $$(".myth-picker-button", mythPicker).forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.myth === selected));
+      });
+    }
+
+    mythSelect.value = MYTHS[safeGet("mythos-selected-myth", "persephone")] ? safeGet("mythos-selected-myth", "persephone") : "persephone";
+    mythSearchInput.value = "";
+    renderMythCatalog();
+    mythSelect.addEventListener("change", () => {
+      closeExpandedMyth();
+      mythSearchInput.value = "";
+      renderMythCatalog();
+      renderMyth();
+    });
+    mythSearchInput.addEventListener("input", renderMythCatalog);
+    mythPicker.addEventListener("click", (event) => {
+      const closeButton = event.target.closest("[data-close-myth]");
+      if (closeButton && mythPicker.contains(closeButton)) {
+        event.stopPropagation();
+        closeExpandedMyth(true);
+        return;
+      }
+      const button = event.target.closest(".myth-picker-button");
+      if (!button || !mythPicker.contains(button) || !MYTHS[button.dataset.myth]) return;
+      const key = button.dataset.myth;
+      if (event.detail === 0) toggleExpandedMyth(key);
+      else if (expandedMythId && expandedMythId !== key) closeExpandedMyth();
+      mythSelect.value = key;
+      renderMyth();
+    });
+    mythPicker.addEventListener("dblclick", (event) => {
+      const button = event.target.closest(".myth-picker-button");
+      if (!button || !mythPicker.contains(button) || !MYTHS[button.dataset.myth]) return;
+      event.preventDefault();
+      const key = button.dataset.myth;
+      mythSelect.value = key;
+      toggleExpandedMyth(key);
+      renderMyth();
+    });
+    renderMyth();
+
+    /* Búsqueda en tiempo real y filtros del léxico. */
+    const searchInput = $("#lexicon-search");
+    const lexiconGrid = $("#lexicon-grid");
+    const lexiconEmpty = $("#lexicon-empty");
+    const lexiconCount = $("#lexicon-count");
+    let activeFilter = "all";
+    const savedSearch = safeGet("mythos-lexicon-search", "");
+    searchInput.value = savedSearch;
+    const savedFilter = safeGet("mythos-lexicon-filter", "all");
+    if (["all", "deidad", "heroe", "simbolo", "culto"].includes(savedFilter)) activeFilter = savedFilter;
+    $$(".filter-pill").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.filter === activeFilter));
+      button.addEventListener("click", () => {
+        activeFilter = button.dataset.filter;
+        safeSet("mythos-lexicon-filter", activeFilter);
+        $$(".filter-pill").forEach((pill) => pill.setAttribute("aria-pressed", String(pill === button)));
+        renderLexicon();
+      });
+    });
+    function renderLexicon() {
+      const term = fold(searchInput.value.trim());
+      const matches = LEXICON.filter((entry) => {
+        const categoryMatch = activeFilter === "all" || entry.type === activeFilter;
+        const haystack = fold([entry.name, entry.typeLabel, entry.search, entry.summary, entry.etymology, entry.substrate, entry.cult, ...entry.refs].join(" "));
+        return categoryMatch && (!term || haystack.includes(term));
+      });
+      safeSet("mythos-lexicon-search", searchInput.value);
+      lexiconCount.textContent = `${matches.length} ${matches.length === 1 ? "entrada" : "entradas"} · ${LEXICON.length} en total`;
+      lexiconEmpty.hidden = matches.length !== 0;
+      lexiconGrid.innerHTML = matches.map((entry) => `
+        <article class="lex-card">
+          <div class="lex-card-top"><h3>${escapeHTML(entry.name)}</h3><span class="lex-kind">${escapeHTML(entry.typeLabel)}</span></div>
+          <p class="lex-summary">${escapeHTML(entry.summary)}</p>
+          <dl class="lex-facts">
+            <div class="lex-fact"><dt>Etimología en Graves</dt><dd>${escapeHTML(entry.etymology)}</dd></div>
+            <div class="lex-fact"><dt>Sustrato prehelénico</dt><dd>${escapeHTML(entry.substrate)}</dd></div>
+            <div class="lex-fact"><dt>Culto / tótem</dt><dd>${escapeHTML(entry.cult)}</dd></div>
+          </dl>
+          <div class="lex-refs" aria-label="Referencias internas">${entry.refs.map((ref) => `<span>${escapeHTML(ref)}</span>`).join(" · ")}</div>
+        </article>`).join("");
+    }
+    searchInput.addEventListener("input", renderLexicon);
+    renderLexicon();
+
+    /* Laboratorio socrático: mazo aleatorio sin repetición hasta agotar preguntas. */
+    const questionTitle = $("#question-title");
+    const questionContext = $("#question-context");
+    const questionHint = $("#question-hint");
+    const questionSource = $("#question-source");
+    const questionTopic = $("#question-topic");
+    const questionCounter = $("#question-counter");
+    const hypothesis = $("#hypothesis");
+    const revealButton = $("#reveal-contrast");
+    const contrastCard = $("#contrast-card");
+    let questionDeck = [];
+    let deckCursor = 0;
+    let activeQuestion = null;
+    function refillDeck() {
+      questionDeck = QUESTIONS.map((_, index) => index);
+      for (let index = questionDeck.length - 1; index > 0; index--) {
+        const swap = Math.floor(Math.random() * (index + 1));
+        [questionDeck[index], questionDeck[swap]] = [questionDeck[swap], questionDeck[index]];
+      }
+      deckCursor = 0;
+    }
+    function displayQuestion(question, label) {
+      activeQuestion = question;
+      questionCounter.textContent = label;
+      questionTopic.textContent = activeQuestion.topic;
+      questionTitle.textContent = activeQuestion.title;
+      questionContext.textContent = activeQuestion.context;
+      questionHint.textContent = activeQuestion.hint;
+      questionSource.textContent = activeQuestion.source;
+      safeSet("mythos-lab-question", activeQuestion.title);
+    }
+    function showNextQuestion() {
+      if (deckCursor >= questionDeck.length) refillDeck();
+      activeQuestion = QUESTIONS[questionDeck[deckCursor]];
+      deckCursor += 1;
+      displayQuestion(activeQuestion, `Cuestión ${deckCursor} / ${QUESTIONS.length}`);
+      contrastCard.hidden = true;
+      hypothesis.value = "";
+      updateHypothesisControls();
+      safeSet("mythos-lab-draft", "");
+    }
+    function updateHypothesisControls() {
+      const length = hypothesis.value.trim().length;
+      $("#char-count").textContent = `${hypothesis.value.length} ${hypothesis.value.length === 1 ? "carácter" : "caracteres"}`;
+      revealButton.disabled = length < 20;
+      safeSet("mythos-lab-draft", hypothesis.value);
+      /* Si cambia el texto, se oculta la comparación anterior para evitar un eco desactualizado. */
+      contrastCard.hidden = true;
+    }
+    hypothesis.addEventListener("input", updateHypothesisControls);
+    $("#next-question").addEventListener("click", showNextQuestion);
+    $("#clear-hypothesis").addEventListener("click", () => {
+      hypothesis.value = "";
+      contrastCard.hidden = true;
+      updateHypothesisControls();
+      hypothesis.focus();
+    });
+    revealButton.addEventListener("click", () => {
+      if (!activeQuestion || hypothesis.value.trim().length < 20) return;
+      $("#hypothesis-echo").textContent = hypothesis.value.trim();
+      $("#answer-key").textContent = activeQuestion.key;
+      $("#critical-check").textContent = activeQuestion.check;
+      contrastCard.hidden = false;
+    });
+    refillDeck();
+    const restoredQuestion = QUESTIONS.find((question) => question.title === safeGet("mythos-lab-question", ""));
+    if (restoredQuestion) {
+      displayQuestion(restoredQuestion, "Cuestión restaurada");
+      hypothesis.value = safeGet("mythos-lab-draft", "");
+      updateHypothesisControls();
+    } else {
+      showNextQuestion();
+    }
+  </script>
+</body>
+</html>
